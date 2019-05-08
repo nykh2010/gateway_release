@@ -22,7 +22,12 @@ class Handle:
     
     def upload(self, topic, data):
         up = uplink.Upload()
-        up.send(topic=topic, payload=data)
+        url = r'http://127.0.0.1:7788/mqtt/publish/offlinecache'
+        payload = {
+            'topic': topic,
+            'payload': data
+        }
+        up.send(url, payload)
 
 class HeartRequest(Handle):
     def func(self, request):
@@ -36,19 +41,6 @@ class HeartRequest(Handle):
             "status":status
         }
         return send_data
-    
-    # def upload(self, data):
-    #     # 上传信息
-    #     send_data = {
-    #         "nid": data["device_id"],
-    #         "d":{
-    #             "image_data_id": data["data_id"],
-    #             "battery": data.get('battery', 100),
-    #             "status": data.get('status', ""),
-    #             "msg": data.get('msg', "")
-    #         }
-    #     }
-    #     super().upload('dma/report/periph', send_data)
 
 class RegisterRequest(Handle):
     def func(self, request):
@@ -63,32 +55,46 @@ class RegisterRequest(Handle):
         else:
             send_data['status'] = 'error'
         return send_data
-        # dl.send_service('serial', send_data)
 
 class OnlineRequest(Handle):
+    def query_task(self, url, data):
+        up = uplink.Upload()
+        ret = up.send(url, data)
+        return ret
+
     def func(self, request):
         try:
             send_data = dict()
             device_id = request['device_id']
             firmware = request.get('firmware', None)
             data_id = request.get('data_id', None)
+            interval = request.get('interval', None)
             if firmware:
                 # 注册上报
-                pass
+                upload_data = {
+                    "nid": device_id,
+                    "d": {
+                        "firmware": firmware
+                    }
+                }
             elif data_id:
                 # 心跳上报
                 ts = gw.get_task_status()
                 if ts in ('0','4','5'): # 没有任务或任务已结束
                     data = {
-                        'device_id': device_id,
-                        'data_id': data_id
+                        'nid': device_id,
+                        'image_data_id': data_id,
+                        'sn': gw.get_gw_id()
                     }
-                    body = self.upload('http://127.0.0.1/', data)
-                    if body:
+                    resp = self.query_task('http://10.252.97.88/iotgw/api/v1/tasks/gwtasks/assign', data)
+                    if resp:
                         # 应答成功，保存任务状态，下发时间，下载任务
-                        ret = gw.create_task(body['task_id'], body['image_data_id'], body['image_data_url'], \
-                                body['image_data_md5'], body['iot_dev_list_md5'], body['iot_dev_list_url'], \
-                                body['start_time'], body['end_time'])
+                        if resp['status'] != 'ok':
+                            raise Exception("get task error")
+                        data = resp['data']
+                        ret = gw.create_task(data['task_id'], data['image_data_id'], data['image_data_url'], \
+                                data['image_data_md5'], data['iot_dev_list_md5'], data['iot_dev_list_url'], \
+                                data['scheduled_start_time'], data['scheduled_end_time'])
                         if ret:
                             start_time, end_time = gw.get_task_time()
                             send_data['task_id'] = gw.get_task_id()
@@ -116,18 +122,28 @@ class OnlineRequest(Handle):
                 interval_time = gw.get_interval_time()
                 if interval_time != request['interval']:
                     send_data['interval'] = interval_time
+                
+                # 准备上报数据
+                upload_data = {
+                    "nid": device_id,
+                    "d": {
+                        "image_data_id": data_id,
+                        "interval": request['interval'],
+                        "battery": request['battery']
+                    }
+                }
             else:
                 raise Exception("request param invalid")
         except Exception as e:
             send_data['status'] = 'error'
             LOG.error(e.__repr__())
         finally:
+            self.upload(upload_data)
             return send_data
     
-    def upload(self, url, data):
-        up = uplink.Upload()
-        resp = up.send_remote(url, data)
-        return resp        
+    def upload(self, data):
+        # 上传信息
+        super().upload('dma/report/periph', data)
 
 class TaskRequest(Handle):
     def func(self, data):
@@ -148,7 +164,7 @@ class TaskRequest(Handle):
                 os.unlink('/tmp/success')       # 删除文件
                 os.unlink('/tmp/fail')
                 send_data['success_list'] = success_list
-                send_data['fail_list'] = fail_list
+                send_data['fail_list'] = fail_list                
         except Exception as e:
             LOG.error(e.__str__())
             return

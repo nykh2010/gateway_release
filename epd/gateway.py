@@ -145,6 +145,9 @@ class Gateway(Config):
             return False
         return True
 
+    def get_gw_id(self):
+        return self.sn
+
     def get_task_id(self):
         epd_task = EpdTask(self.task_url)
         return int(epd_task.task_id)
