@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]>
+<html class="ie6" lang="zh-cn"><![endif]-->
+<!--[if IE 7 ]>
+<html class="ie7" lang="zh-cn"><![endif]-->
+<!--[if IE 8 ]>
+<html class="ie8" lang="zh-cn"><![endif]-->
+<!--[if IE 9 ]>
+<html class="ie9" lang="zh-cn"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html class="w3c"><!--<![endif]--><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>多功能通用网关</title>
+    <!-- <link rel="shortcut icon" href="http://192.168.100.1/favicon.ico" type="image/x-icon"> -->
+    <link type="text/css" href="/static/css/reset.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/nav.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/default.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/login.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/js/jquery-1.js"></script>
+	<script type="text/javascript" src="/static/js/jq.js"></script>
+    <script type="text/javascript" src="/static/js/new_lib.js"></script>
+    <script type="text/javascript" src="/static/js/cookie.js"></script>
+    <script type="text/javascript" src="/static/js/module.js"></script>
+    <script type="text/javascript" src="/static/js/language_CN.js"></script>
+    <script type="text/javascript" src="/static/js/aes.js"></script>
+</head>
+
+<body>
+<div class="topbar">
+    <div class="container">
+        <ul class="nav" style="color: white"><li>多功能通用网关</li></ul>
+    </div>
+    <!-- <div class="container">
+        <div class="logo">
+            <img id="logo_img" src="/static/images/nav-logo.png" alt="360安全路由">
+        </div>
+        <ul class="nav">
+            <li><a id="official_website" href="http://luyouw.360.cn/" target="_blank">去官网</a></li>
+            <li><a id="bbs" href="http://bbs.360.cn/forum-7007-1.html" target="_blank">论坛</a></li>
+            <li class="last"><a id="micro_blog" href="http://weibo.com/luyou360" target="_blank">微博</a></li>
+        </ul>
+    </div> -->
+</div>
+<div id="login_area" class="login-area">
+    <!-- <div class="slogan" id="slogan">欢迎使用360安全路由</div> -->
+    <div id="login" class="login">
+        <form id="login_frm" action="javascript:void(0)">
+            {% raw xsrf_form_html() %}
+            <div class="input-area clearfix">
+				<!-- <input value="360安全路由" class="sr-only" type="text"> -->
+                <label id="lbl_login_pwd" for="login_pwd" class="input-label">管理密码</label>
+                <input id="login_pwd" name="login_pwd" maxlength="63" class="input-txt" type="password">
+                <!--<input type="password" value="" style="display:none;">--><!--添加后浏览器不再弹出记住密码提示-->
+                <input value="360LoginFlag" style="display:none;" type="text">
+            </div>
+            <!--<div id="pwd_check" class="security-status"></div>-->
+            <div class="button-area">
+                <button type="submit" class="btn_login" onclick="loginIn();">登录</button>
+            </div>
+        </form>
+    </div>
+    <!-- <div id="login_info" class="pass-info" hidden><p>默认情况下，路由器的管理密码就是您的WiFi密码</p><p>忘记密码请按一下RESET键复位，重新配置路由器</p></div> -->
+    <div id="login_router"></div>
+</div>
+<div id="lock_div"></div>
+<div id="message_layer">
+    <div id="msg_type" class="wait"></div>
+    <div id="msg" class="word"></div>
+</div>
+<script type="text/javascript">
+    var language_type = "CN";
+    var L = {};
+    $(document).ready(function () {
+        current_html = "login";
+        $.ajaxSetup({
+            cache: false //关闭AJAX相应的缓存
+        });
+        $("body").mousedown(function () {
+            hide_msgbox();
+        });
+        language_type = igd.global_param.language_type;
+        L = language[language_type]["JS"];
+        document.title = language[language_type]["TITLE"];
+        // wan_status_detect_loop();
+		init_language(current_html);
+        init_text_event();
+        $("#login_pwd").focus();
+    });
+
+    function loginIn() {
+        if ($.cookie("Qihoo_360_login")) {
+            $.cookie('Qihoo_360_login', null, {
+                path: '/',
+                expires: 1
+            });
+        }
+        var obj = {};
+        obj._xsrf = $("#login_frm").children("input[name='_xsrf']").val();
+        obj.user = igd.global_param.default_user;
+        obj.pass = $("#login_pwd").val();
+        // obj.from = 1;//PC
+        if (check_input("login_frm")) {
+            $.post("/auth/login", obj, function (data) {
+                console.log("%o\n", data);
+                if (data.status == "success") {
+                    location.href = "/setup";
+                }
+                else {
+                    show_message("login_failure");
+                }
+                // try {
+                //     data = eval("(" + data + ")");
+                //     if (data["success"]=="1"&&data["token_id"]!="") {
+                //        location.href = "./new_index.htm?token_id="+data["token_id"];
+                //     }
+                //     else {
+                //         if (!isNaN(data.err_no) && (data.err_no == "48" || data.err_no == "49"|| data.err_no == "50"|| data.err_no == "51"|| data.err_no == "52")) {
+                //             show_message("login_failure" + data.err_no);
+                //         } else {
+                //             show_message("login_failure");
+                //         }
+                //     }
+                // }
+                // catch (e) {
+                //     show_message("login_failure");
+                // }
+            });
+        }
+    }
+	
+	var status_detect_timer;
+	function wan_status_detect_loop(){
+		$.post("/router/interface_status_show.cgi", {noneed: "noneed"});
+		if(status_detect_timer)
+			window.setInterval(status_detect_timer);
+		status_detect_timer = window.setInterval(function(){
+			//console.log("do not release link");
+			$.post("/router/interface_status_show.cgi", {noneed: "noneed"});
+		},30*1000);
+	}
+	
+</script>
+
+</body></html>

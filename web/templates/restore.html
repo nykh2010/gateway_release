@@ -1,0 +1,57 @@
+{% extends "mainboard.html" %}
+
+{% block container_wrap %}
+<div id="container_wrap">
+    <div class="nav">
+        <a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
+        <a href="javascript:void(0)">恢复出厂设置&nbsp;</a>
+        <button class="return_a" onclick="change_dir('/setup')">返回</button>
+    </div>
+    <div class="fix_ie_shadow rally_fix_ie_shadow"></div>
+    <div class="form-border-shadow">
+        <div id="restore_default_div" class="app-box">
+            <form id="restore_default_form" class="form-area" action="javascript:void(0);">
+                {% raw xsrf_form_html() %}
+                <!--<div class="opt">
+                    <img src="./images/rebase.png">
+                </div>-->
+                <div class="rally_center_tip center_tip">
+                    <span id="div_manual_update_tip">若未保存配置信息，恢复出厂设置后，需重新设置后才能正常上网！</span>
+                </div>
+                <div class="item">
+                    <label id="lbl_param_save" class="form-label">保存配置信息</label>
+                    <div class="radio_form radio_on" id="param_save" onclick="radio_toggle(this,'param_save_change');">
+                    </div>
+                    <input type="hidden" id="param_save_hidden">
+                </div>
+                <div class="item">
+                    <label id="network_param_lbl" class="form-label">网络参数</label>
+                    <input type="checkbox" id="network_param" checked="checked" class="param" onclick="param_choose();">
+                    <label id="network_param_tip" for="network_param">包括AP SSID、STA SSID、HOSTIP和HOST PORT</label>
+                </div>
+                <div class="item">
+                    <label id="host_name_lbl" class="form-label">自定义主机名信息</label>
+                    <input type="checkbox" id="host_name_param" checked="checked" class="param" onclick="param_choose()">
+                    <label id="host_name_tip" for="host_name_param">包括谁在上网页自定义的主机信息</label>
+                </div>
+                <div class="item">
+                    <label id="plugin_info_lbl" class="form-label">插件信息</label>
+                    <input type="checkbox" id="plugin_param" checked="checked" class="param" onclick="param_choose()">
+                    <label id="plugin_info_tip" for="plugin_param">包括插件中心下载安装以及手动安装的所有插件</label>
+                </div>
+                <div class="opt">
+                    <input type="submit" onclick="RstoreDefault();" class="btn submit_btn btn_default" value="恢复出厂设置">
+                </div>
+            </form>
+        </div>
+        <div id="reset_div" class="section_hide">
+            <center>
+                <div class="reset_tip">
+                    <span id="span_reset_tip">网关正在重启，请勿断电，请稍候……&nbsp;</span>
+                    <span id="time"></span>
+                </div>
+            </center>
+        </div>
+    </div>
+</div>
+{% end %}

@@ -1,0 +1,39 @@
+<form id="wireless_advance_frm_2" class="form-area" action="javascript:void(0);">
+    {% raw xsrf_form_html() %}
+    <input name="radio_number" value="2" hidden>
+    <div class="item">
+    <!-- 唤醒时间 -->
+        <label class="form-label" for="wakeup">唤醒时间</label>
+        <input type="text" id="wakeup" name="wakeup" class="input-text input-small" style="width:130px;" value="{{radio.wakeup}}">
+        <span class="word_sep">分钟</span>
+    </div>
+    <div class="item">
+    <!-- 重复次数 -->
+        <label class="form-label" for="trycount">尝试次数</label>
+        <input type="text" id="trycount" name="trycount" class="input-text input-small" style="width:130px;" value="{{radio.trycount}}">
+        <span class="word_sep">次</span>
+    </div>
+    <div class="item">
+    <!-- 重复次数 -->
+        <label class="form-label" for="wait">延时等待时间</label>
+        <input type="text" id="wait" name="wait" class="input-text input-small" style="width:130px;" value="{{radio.wait}}">
+        <span class="word_sep">秒</span>
+    </div>
+
+    <div class="item">
+        <label class="form-label" id="" for="transmode">收发模式</label>
+        <select id="transmode" name="transmode" style="width:148px;">
+            <option value="0">只发</option>
+            <option value="1">只收</option>
+            <option value="2">自动</option>
+        </select>
+        <script type="text/javascript">
+            $("#transmode").children("option[value='{{radio.transmode}}']").attr("selected", "selected");
+        </script>
+    </div>
+    <div class="item opt">
+        <input type="hidden" name="action" value="1">
+        <input type="submit" class="btn submit_btn btn_confirm" onclick="developer_set('2')" value="确定">
+        <input type="button" class="btn gray" onclick="radio_restart('2')" value="重启">
+    </div>
+</form>
