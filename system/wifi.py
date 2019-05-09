@@ -158,11 +158,27 @@ class Wifi(Config):
     def __init__(self):
         super().__init__('wifi')
 
+    def send_cmd(self, cmd):
+        with os.popen(cmd) as fp:
+            res = fp.readlines()
+        print("start: %s" % cmd)
+        print(res)
+        return res
+
+    def set_sta_mode(self):
+        res = self.send_cmd('wpa_cli -iwlan0 set_network 0 ssid \'"%s"\'' % self.sta_ssid)
+        res = self.send_cmd('wpa_cli -iwlan0 set_network 0 psk \'"%s"\'' % self.sta_passwd)
+        res = self.send_cmd('wpa_cli -iwlan0 save_config')
+        res = self.send_cmd('ifdown wlan0')
+        res = self.send_cmd('ifup wlan0')
+        res = self.send_cmd('ifconfig wlan0')
+
+
     def set_mode(self):
         if self.mode == 'ap':
             pass            # 设置为ap模式
         elif self.mode == 'sta':
-            pass            # 设置为sta模式
+            self.set_sta_mode()         # 设置为sta模式
         else:
             raise Exception("mode error")
 
