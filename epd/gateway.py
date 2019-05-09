@@ -44,6 +44,7 @@ class Gateway(Config):
 
     def create_whitelist(self, url, md5):
         LOG.info("download white list file")
+        os.system("rm %s.tmp" % self.white_list_url)        #####
         os.system("wget -c %s -O %s.tmp" % (url, self.white_list_url))
         ret = self.check_whitelist_integrity(md5)
         if not ret:
@@ -78,8 +79,9 @@ class Gateway(Config):
     
     def create_task(self, task_id, image_data_id, image_data_url,\
             image_data_md5, iot_dev_list_md5, iot_dev_list_url, start_time, end_time):
-        os.system("wget %s -O %s.tmp" % (image_data_url, self.data_url))
-        os.system("wget %s -O %s.tmp" % (iot_dev_list_url, self.execute_url))
+        epd_task = EpdTask(self.task_url)
+        os.system("wget %s -O %s.tmp" % (image_data_url, epd_task.data_url))
+        os.system("wget %s -O %s.tmp" % (iot_dev_list_url, epd_task.execute_url))
         ret = self.check_task_integrity(image_data_md5, iot_dev_list_md5)
         if not ret:
             return False
@@ -87,7 +89,6 @@ class Gateway(Config):
         # 0-none 1-sleep 2-ready 3-run 4-finish 5-suspend
         if self.__taskId == 0 or (task_id != self.__taskId and self.__taskStatus in ('','0','1','4','5')):
             # 保存任务状态
-            epd_task = EpdTask(self.task_url)
             epd_task.set_item('task_id', str(task_id))
             epd_task.set_item('image_data_id', str(image_data_id))
             epd_task.set_item('image_data_url', image_data_url)
@@ -96,8 +97,8 @@ class Gateway(Config):
             epd_task.set_item('task_status', '1')
             epd_task.save()
             # 保存待更新列表
-            os.system("mv %s.tmp %s" % (self.data_url, self.data_url))
-            os.system("mv %s.tmp %s" % (self.execute_url, self.execute_url))
+            os.system("mv %s.tmp %s" % (epd_task.data_url, epd_task.data_url))
+            os.system("mv %s.tmp %s" % (epd_task.execute_url, epd_task.execute_url))
             self.__taskId = self.get_task_id()
             self.__taskStatus = self.get_task_status()     # 更新任务状态
             return True
@@ -129,7 +130,8 @@ class Gateway(Config):
 
     def check_task_integrity(self, image_data_md5, iot_dev_list_md5):
         hash_obj = hashlib.md5()
-        with open("%s.tmp" % self.data_url, "rb") as datafile:
+        epd_task = EpdTask(self.task_url)
+        with open("%s.tmp" % epd_task.data_url, "rb") as datafile:
             hash_obj.update(datafile.read())
             hash_code = hash_obj.hexdigest()
         if image_data_md5 != hash_code:
@@ -137,7 +139,7 @@ class Gateway(Config):
             return False
         
         hash_obj = hashlib.md5()
-        with open("%s.tmp" % self.execute_url, "rb") as devfile:
+        with open("%s.tmp" % epd_task.execute_url, "rb") as devfile:
             hash_obj.update(devfile.read())
             hash_code = hash_obj.hexdigest()
         if iot_dev_list_md5 != hash_code:
@@ -156,6 +158,11 @@ class Gateway(Config):
         epd_task = EpdTask(self.task_url)
         return epd_task.task_status
 
+    def get_server_url(self):
+        host = self.get('server', 'host')
+        port = self.get('server', 'port')
+        return host, port
+
     def get_task_time(self):
         epd_task = EpdTask(self.task_url)
         return epd_task.start_time, epd_task.end_time
@@ -166,7 +173,7 @@ class Gateway(Config):
         return epd_task.image_data_id
 
     def get_interval_time(self):
-        return self.interval_time
+        return self.interval
     
     def get_auth_key(self):
         # 从文件中获取auth_key
@@ -193,15 +200,18 @@ class Gateway(Config):
             定时任务
         '''
         data = {
-            "d": {
-                'task_id': self.__taskId,
-                'whitelist_md5': self.__whiteListMD5,
-                'check_code': int(self.key),
-                'interval': self.interval
+            'topic': 'gateway/report/status',
+            "payload": {
+                "d": {
+                    'task_id': self.__taskId,
+                    'whitelist_md5': self.__whiteListMD5,
+                    'check_code': int(self.key),
+                    'interval': self.interval
+                }
             }
         }
         upload = uplink.Upload()
-        upload.send(data, topic='gateway/report/status')
+        upload.send('http://127.0.0.1:7788/mqtt/publish/offlinecache', data)
         timer = threading.Timer(handler_interval, self.timer_handler)
         timer.start()
 

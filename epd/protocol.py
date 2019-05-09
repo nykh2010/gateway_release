@@ -71,6 +71,7 @@ class OnlineRequest(Handle):
             interval = request.get('interval', None)
             if firmware:
                 # 注册上报
+                LOG.info("%s register", device_id)
                 upload_data = {
                     "nid": device_id,
                     "d": {
@@ -79,6 +80,15 @@ class OnlineRequest(Handle):
                 }
             elif data_id:
                 # 心跳上报
+                # 准备上报数据
+                upload_data = {
+                    "nid": device_id,
+                    "d": {
+                        "image_data_id": data_id,
+                        "interval": request['interval'],
+                        "battery": request['battery']
+                    }
+                }
                 ts = gw.get_task_status()
                 if ts in ('0','4','5'): # 没有任务或任务已结束
                     data = {
@@ -86,7 +96,9 @@ class OnlineRequest(Handle):
                         'image_data_id': data_id,
                         'sn': gw.get_gw_id()
                     }
-                    resp = self.query_task('http://10.252.97.88/iotgw/api/v1/tasks/gwtasks/assign', data)
+                    LOG.info("start query")
+                    resp = self.query_task('http://10.10.36.5:8000/v1/tasks/gwtasks/assign', data)
+                    LOG.info("get response")
                     if resp:
                         # 应答成功，保存任务状态，下发时间，下载任务
                         if resp['status'] != 'ok':
@@ -122,16 +134,6 @@ class OnlineRequest(Handle):
                 interval_time = gw.get_interval_time()
                 if interval_time != request['interval']:
                     send_data['interval'] = interval_time
-                
-                # 准备上报数据
-                upload_data = {
-                    "nid": device_id,
-                    "d": {
-                        "image_data_id": data_id,
-                        "interval": request['interval'],
-                        "battery": request['battery']
-                    }
-                }
             else:
                 raise Exception("request param invalid")
         except Exception as e:
@@ -149,12 +151,13 @@ class TaskRequest(Handle):
     def func(self, data):
         task_id = data['task_id']
         status = data['status']
+        send_data = {}
         try:
             ret = gw.set_task_status(task_id, status)
             if not ret:
-                raise Exception()
-            send_data = {}
-            if status == 4:
+                raise Exception('task %d not exist' % task_id)
+            upload_data = {}
+            if status == 3:
                 with open("/tmp/success") as successfile:
                     content = successfile.read()
                     success_list = content.split('\n')
@@ -163,22 +166,25 @@ class TaskRequest(Handle):
                     fail_list = content.split('\n')
                 os.unlink('/tmp/success')       # 删除文件
                 os.unlink('/tmp/fail')
-                send_data['success_list'] = success_list
-                send_data['fail_list'] = fail_list                
+                upload_data['success_list'] = success_list
+                upload_data['failed_list'] = fail_list                
+            # 上传执行状态
+            upload_data['task_id'] = task_id
+            upload_data['status'] = status
+            self.upload('gateway/report/task/status', upload_data)
+            send_data['status'] = 'ok'
         except Exception as e:
             LOG.error(e.__str__())
-            return
-        
-        # 上传执行状态
-        send_data['task_id'] = task_id
-        send_data['task_status'] = status
-        self.upload(send_data)
+            send_data['status'] = 'error'
+            send_data['msg'] = e.__str__()
+        finally:
+            return send_data
     
-    def upload(self, data):
+    def upload(self, topic, data):
         send_data = {
             "d":data
         }
-        super().upload('gateway/report/task/result', send_data)
+        super().upload(topic, send_data)
 
 apps = [
     ("heart", HeartRequest),
@@ -198,43 +204,44 @@ class TaskApp(RequestHandler):
             request = json.loads(request)
             body = request['d']
             if cmd == 'create':
-                ret = gw.create_task(body['task_id'], body['image_data_id'], body['image_data_url'], \
-                    body['image_data_md5'], body['iot_dev_list_md5'], body['iot_dev_list_url'], \
-                    body['start_time'], body['end_time'])
-                if ret:
-                    data = {
-                        "cmd":"task",
-                        "method":"create",
-                        "task_id":body['task_id'],
-                        "data_id":body['image_data_id'],
-                        "start_time":body['start_time'],
-                        "end_time":body['end_time']
-                    }
-                    ret = dl.send_service('serial', data, need_resp=True)
-                    if ret['status'] != 'ok':
-                        gw.set_try_data('serial', data)
-                    # raise HTTPError(200)
-                    status = 'ok'
-                    msg = "task_id %s create success" % body['task_id']
-                else:
-                    # 不可创建任务
-                    LOG.info("task could not create")
-                    status = 'failed'
-                    msg = "task_id %s create not allowed" % body['task_id']
-                    # 上传命令处理结果
-                upload = uplink.Upload()
-                resp = {
-                    "id": request['id'],
-                    "from": request['from'],
-                    "status": status,
-                    "command": request['command'],
-                    "d":{
-                        "code":"task_status",
-                        "msg":msg
-                    }
-                }
-                # gw.get_task_status()
-                upload.send(resp, topic='dma/cmd/resp')
+                pass
+                # ret = gw.create_task(body['task_id'], body['image_data_id'], body['image_data_url'], \
+                #     body['image_data_md5'], body['iot_dev_list_md5'], body['iot_dev_list_url'], \
+                #     body['start_time'], body['end_time'])
+                # if ret:
+                #     data = {
+                #         "cmd":"task",
+                #         "method":"create",
+                #         "task_id":body['task_id'],
+                #         "data_id":body['image_data_id'],
+                #         "start_time":body['start_time'],
+                #         "end_time":body['end_time']
+                #     }
+                #     ret = dl.send_service('serial', data, need_resp=True)
+                #     if ret['status'] != 'ok':
+                #         gw.set_try_data('serial', data)
+                #     # raise HTTPError(200)
+                #     status = 'ok'
+                #     msg = "task_id %s create success" % body['task_id']
+                # else:
+                #     # 不可创建任务
+                #     LOG.info("task could not create")
+                #     status = 'failed'
+                #     msg = "task_id %s create not allowed" % body['task_id']
+                #     # 上传命令处理结果
+                # upload = uplink.Upload()
+                # resp = {
+                #     "id": request['id'],
+                #     "from": request['from'],
+                #     "status": status,
+                #     "command": request['command'],
+                #     "d":{
+                #         "code":"task_status",
+                #         "msg":msg
+                #     }
+                # }
+                # # gw.get_task_status()
+                # upload.send(resp, topic='dma/cmd/resp')
             elif cmd == 'cancel':
                 # cancel task
                 data = {
@@ -260,22 +267,30 @@ class TaskApp(RequestHandler):
                     result = {'code':'cancel_failed', 'msg':'task not found'}
                 # 上传处理结果
                 upload = uplink.Upload()
+
                 resp = {
                     "id": request['id'],
                     "from": request['from'],
                     "status": status,
                     "command": request['command'],
-                    "d":result
+                    "msg":result
                 }
-                upload.send(resp, topic='dma/cmd/resp')
+
+                upload_data = {
+                    'topic': 'dma/cmd/resp',
+                    'payload': resp
+                }
+
+                upload.send('http://127.0.0.1:7788/mqtt/publish/offlinecache', upload_data)
             elif cmd == 'confirm':
+                pass
                 # confirm task 
-                data = {
-                    "table_name":"sql",
-                    "sql_cmd":"update `task` set (`start_time`='%s', `end_time`='%s', `status`=2) where `task_id`='%s';" % \
-                        (body['start_time'], body['end_time'], body['task_id'])
-                }
-                dl.send_service('database', data)
+                # data = {
+                #     "table_name":"sql",
+                #     "sql_cmd":"update `task` set (`start_time`='%s', `end_time`='%s', `status`=2) where `task_id`='%s';" % \
+                #         (body['start_time'], body['end_time'], body['task_id'])
+                # }
+                # dl.send_service('database', data)
             else:
                 raise HTTPError(404)
         except Exception as e:
@@ -311,24 +326,29 @@ class GatewayApp(RequestHandler):
             request = json.loads(request)
             body= request["d"]
             if cmd == 'group':
-                pass
+                raise Exception("%s cmd not found" % cmd)
             elif cmd == 'white_list':
                 ret = gw.create_whitelist(body['url'], body['md5'])
                 if ret:
                     LOG.info("white list create success")
                     resp_status = "ok"
                     resp_data = {"result": "ok"}
+                else:
+                    raise Exception("white list create failed")
             elif cmd == 'check_code':
                 gw.set_auth_key(body['check_code'])
                 resp_status = "ok"
                 resp_data = {"result":"ok"}
+            else:
+                raise Exception("%s cmd not found" % cmd)
                 
-        except EpdException as e:
+        except Exception as e:
             LOG.error(e.__repr__())
             resp_status = "err",
-            resp_data = {"msg":e.message}
+            resp_data = {"msg":e.__str__()}
         finally:
             upload = uplink.Upload()
+            url = r'http://127.0.0.1:7788/mqtt/publish/offlinecache'
             resp = {
                 "id": request['id'],
                 "from": request['from'],
@@ -336,5 +356,9 @@ class GatewayApp(RequestHandler):
                 "command": request['command'],
                 "d": resp_data
             }
-            upload.send(resp, topic="dma/cmd/resp")
+            data = {
+                'topic': "dma/cmd/resp",
+                'payload':resp
+            }
+            upload.send(url, data)
 

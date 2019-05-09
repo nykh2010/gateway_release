@@ -30,6 +30,8 @@ class Upload:
             resp = urllib.request.urlopen(request)
             content = resp.read().decode('utf-8')
             LOG.info("result:" + content)
+            content = json.loads(content)
+            return content
         except Exception as e:
             LOG.error(e.__str__())
 
