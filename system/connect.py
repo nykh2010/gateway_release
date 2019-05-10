@@ -33,112 +33,6 @@ class Config(ConfigParser):
         with open(self.path, "w") as fp:
             self.write(fp)
 
-# class EthernetHandler:
-#     def func(self, request):
-#         pass
-
-# class SetHandler:
-#     def func(self, request):
-#         device = request['device']
-#         if device == 'wifi':
-#             pass
-#         elif device == 'ethernet':
-#             ethernet = Ethernet()
-#             ethernet.set_mode(request['mode'], request['ip'], request['netmask'])
-#         else:
-#             raise Exception("no device")
-#         resp = {'status':'ok'}
-#         return resp
-
-# class GetHandler:
-#     def func(self, request):
-#         device = request['device']
-#         if device == 'wifi':
-#             pass
-#         elif device == 'ethernet':
-#             ethernet = Ethernet()
-#             resp = {'status': 'ok'}
-#             resp['mode'] = ethernet.get_mode()
-#             resp['ip'], resp['netmask'] = ethernet.get_inet()
-#         return resp
-
-# apps = [
-#     ('set', SetHandler),
-#     ('get', GetHandler)
-# ]
-
-# class DownlinkServer(StreamRequestHandler):
-#     def route(self, data):     
-#         for app in apps:
-#             if data['cmd'] == app[0]:
-#                 return app[1]
-#         return None
-#     def handle(self):
-#         data = self.request.recv(1024)
-#         data = data.decode('utf-8')
-#         data = json.loads(data, encoding='utf-8')
-#         # LOG.info("downlink recv: %s", data)
-#         HandleClass = self.route(data)
-#         handler = HandleClass()
-#         send_data = handler.func(data)
-#         if isinstance(send_data, dict):
-#             content = json.dumps(send_data)
-#             # LOG.info("downlink send: %s", content)
-#             self.wfile.write(content.encode('utf-8'))
-
-# class Downlink(UnixStreamServer, Config):
-#     __error = False
-#     services = []
-#     def __init__(self):
-#         Config.__init__(self, 'com')
-#         self.__path = self.ethernet
-#         for option in self.options('com'):
-#             service = (option, self.get('com', option))
-#             self.services.append(service)
-#         if os.path.exists(self.__path):
-#             os.unlink(self.__path)
-#         super().__init__(self.__path, DownlinkServer)
-#         self.__thread = Thread(target=self.start_service)
-#         self.__thread.start()
-
-#     def start_service(self):
-#         # LOG.info("downlink service start")
-#         self.serve_forever()
-
-#     def stop_service(self):
-#         # LOG.info("downlink service stop")
-#         self.server_close()
-#         self.__thread.join()
-
-#     def send_service(self, service_name, data, need_resp=False):
-#         path = ""
-#         for service in self.services:
-#             if service_name == service[0]:
-#                 path = service[1]
-#                 break
-#         if path:
-#             try:
-#                 self.__client = socket(family=AF_UNIX)
-#                 self.__client.connect(path)
-#                 content = json.dumps(data)
-#                 self.__client.send(content.encode('utf-8'))
-#                 if need_resp:
-#                     resp = self.__client.recv(1024*1024)
-#                     if not resp:
-#                         raise Exception()
-#                     resp = resp.decode('utf-8')
-#                     # LOG.info(resp)
-#                     content = json.loads(resp, encoding='utf-8')
-#             except Exception as e:
-#                 # LOG.error(e.__repr__())
-#                 content = {
-#                     'status':500,
-#                     'msg':e.__repr__()
-#                 }
-#             finally:
-#                 self.__client.close()
-#                 return content
-
 class Wifi(Config):
     '''
         1. 启动wpa_supplicant
@@ -326,8 +220,6 @@ class Ethernet(Config):
     def send_cmd(self, cmd):
         with os.popen(cmd) as fp:
             res = fp.readlines()
-        # print("start: %s" % cmd)
-        # print(res)
         return res
 
     def set_dhcp_mode(self, *args):
