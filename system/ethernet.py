@@ -163,17 +163,33 @@ class Ethernet(Config):
         elif params['--command'] == 'set':
             try:
                 mode = params['--mode']
+                if mode == 'dhcp':
+                    self.set_mode('dhcp')
+                elif mode == 'static':
+                    self.set_mode('static', params['--addr'], params['--netmask'])
             except:
-                raise 
+                raise Exception('''--mode:    dhcp or static
+      --addr:    inet address. e.g. 127.0.0.1
+      --netmask: netmask. e.g. 255.255.255.0''')
+        elif params['--command'] == 'get':
+            try:
+                addr, netmask = self.get_inet()
+                print("mode:    %s" % self.mode)
+                print("addr:    %s" % addr)
+                print("netmask: %s" % netmask)
+            except:
+                raise Exception("%s not found" % self.inet)
+        else:
+            raise Exception('''command not found. init, set, get command''')
 
     def send_cmd(self, cmd):
         with os.popen(cmd) as fp:
             res = fp.readlines()
-        print("start: %s" % cmd)
-        print(res)
+        # print("start: %s" % cmd)
+        # print(res)
         return res
 
-    def set_dhcp_mode(self):
+    def set_dhcp_mode(self, *args):
         res = self.send_cmd('/etc/init.d/dhcpd-server stop')
         res = self.send_cmd('ifconfig %s down' % self.inet)
         res = self.send_cmd('ifconfig %s up' % self.inet)
@@ -228,8 +244,6 @@ def check_param(params):
     # 输入设备
     if '-i' not in params.keys():
         raise Exception("-i: device should be specified")
-    if '-c' not in params.keys():
-        raise Exception("-c: command should be specified")
 
 def get_device_class(device_name):
     if device_name == 'wifi':
@@ -245,9 +259,9 @@ help = ''''''
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print(help)
-    opts, args = getopt.getopt(sys.argv[1:], 'i:c:', longopts=['command=',\
+    opts, args = getopt.getopt(sys.argv[1:], 'i:', longopts=['command=',\
         'mode=','addr=','netmask=',\
-        'ssid=','psk'])
+        'ssid=','psk='])
     try:
         params = {}
         for opt, arg in opts:
