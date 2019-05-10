@@ -7,6 +7,8 @@ import json
 import os
 import time
 import re
+import sys
+import getopt
 
 PATH = '/etc/gateway/system.ini'
 
@@ -137,6 +139,9 @@ class Downlink(UnixStreamServer, Config):
                 self.__client.close()
                 return content
 
+class Wifi(Config):
+    pass
+
 class Ethernet(Config):
     '''
     1. /etc/network/interfaces 中 eth0 默认为 dhcp 模式
@@ -151,6 +156,15 @@ class Ethernet(Config):
     '''
     def __init__(self):
         super().__init__('ethernet')
+
+    def handle(self, params):
+        if params['--command'] == 'init':
+            self.set_mode(self.mode, self.inet4_addr, self.netmask)
+        elif params['--command'] == 'set':
+            try:
+                mode = params['--mode']
+            except:
+                raise 
 
     def send_cmd(self, cmd):
         with os.popen(cmd) as fp:
@@ -210,10 +224,45 @@ class Ethernet(Config):
             pass
     
 
+def check_param(params):
+    # 输入设备
+    if '-i' not in params.keys():
+        raise Exception("-i: device should be specified")
+    if '-c' not in params.keys():
+        raise Exception("-c: command should be specified")
+
+def get_device_class(device_name):
+    if device_name == 'wifi':
+        return Wifi
+    elif device_name == 'ethernet':
+        return Ethernet
+    else:
+        raise Exception("-i: device %s not found" % device_name)
+
+
+help = ''''''
+
 if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print(help)
+    opts, args = getopt.getopt(sys.argv[1:], 'i:c:', longopts=['command=',\
+        'mode=','addr=','netmask=',\
+        'ssid=','psk'])
     try:
-        downlink = Downlink()
-        downlink.start_service()
-        downlink.stop_service()
+        params = {}
+        for opt, arg in opts:
+            params[opt] = arg
+        check_param(params)
+        Device = get_device_class(params.get('-i'))
+        device = Device()       # 创建要操作的设备
+        device.handle(params)        
     except Exception as e:
-        print(e.__repr__())
+        print(e.__str__())
+        
+            
+    # try:
+    #     downlink = Downlink()
+    #     downlink.start_service()
+    #     downlink.stop_service()
+    # except Exception as e:
+    #     print(e.__repr__())
