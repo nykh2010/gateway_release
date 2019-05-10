@@ -11,6 +11,10 @@ data = {
     'cmd':'get',
     'device':'ethernet'
 }
+
+# 设置网卡模式
+
+
 content = json.dumps(data)
 client.send(content.encode('utf-8'))
 resp = client.recv(1024*1024)
