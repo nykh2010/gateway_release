@@ -168,7 +168,7 @@ class Wifi(Config):
                 if mode == 'ap':
                     self.set_mode('ap')
                 elif mode == 'sta':
-                    self.set_mode('sta', params['--addr'], params['--netmask'])
+                    self.set_mode('sta', params['--ssid'], params['--psk'])
                 elif mode == 'disable':
                     self.close_wifi()
                 else:
@@ -195,7 +195,7 @@ class Wifi(Config):
         res = self.send_cmd('ifconfig %s | grep inet\ addr' % self.inet)
         if res:
             content = res[0]
-            match_res = re.match(r'inet addr:(.*\d+).*Mask:(.*).*?', content.strip())
+            match_res = re.match(r'inet addr:(\d+\.\d+\.\d+\.\d+).*Mask:(.*).*?', content.strip())
             return match_res.groups()
         else:
             return "", ""
@@ -331,7 +331,7 @@ class Ethernet(Config):
         return res
 
     def set_dhcp_mode(self, *args):
-        res = self.send_cmd('/etc/init.d/dhcpd-server stop')
+        res = self.send_cmd('/etc/init.d/dhcp-server stop')
         res = self.send_cmd('ifconfig %s down' % self.inet)
         res = self.send_cmd('ifconfig %s up' % self.inet)
     
@@ -339,14 +339,14 @@ class Ethernet(Config):
         self.set_item('inet4_addr', inet4_addr)
         self.set_item('netmask', netmask)
         res = self.send_cmd('ifconfig %s %s netmask %s' % (self.inet, self.inet4_addr, self.netmask))
-        res = self.send_cmd('/etc/init.d/dhcpd-server restart')
+        res = self.send_cmd('/etc/init.d/dhcp-server restart')
         self.save()
 
     def get_inet(self):
         res = self.send_cmd('ifconfig %s | grep inet\ addr' % self.inet)
         if res:
             content = res[0]
-            match_res = re.match(r'inet addr:(.*\d+).*Mask:(.*).*?', content.strip())
+            match_res = re.match(r'inet addr:(\d+\.\d+\.\d+\.\d+).*Mask:(.*).*?', content.strip())
             return match_res.groups()
         else:
             return "", ""
