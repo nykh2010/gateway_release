@@ -332,8 +332,8 @@ class Ethernet(Config):
 
     def set_dhcp_mode(self, *args):
         res = self.send_cmd('/etc/init.d/dhcp-server stop')
-        res = self.send_cmd('ifconfig %s down' % self.inet)
-        res = self.send_cmd('ifconfig %s up' % self.inet)
+        res = self.send_cmd('dhclient %s -r' % self.inet)
+        res = self.send_cmd('dhclient %s' % self.inet)
     
     def set_static_mode(self, inet4_addr, netmask):
         self.set_item('inet4_addr', inet4_addr)
