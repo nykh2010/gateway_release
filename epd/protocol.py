@@ -67,7 +67,7 @@ class OnlineRequest(Handle):
             send_data = dict()
             device_id = request['device_id']
             firmware = request.get('firmware', None)
-            data_id = request.get('data_id', None)
+            data_id = request.get('data_id', 0)
             interval = request.get('interval', None)
             if firmware:
                 # 注册上报
@@ -140,7 +140,8 @@ class OnlineRequest(Handle):
             send_data['status'] = 'error'
             LOG.error(e.__repr__())
         finally:
-            self.upload(upload_data)
+            if upload_data:
+                self.upload(upload_data)
             return send_data
     
     def upload(self, data):
