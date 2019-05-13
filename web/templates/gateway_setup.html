@@ -23,15 +23,15 @@
 						{% raw xsrf_form_html() %}
 						<div class="item">
 							<label class="form-label" id="">网关ID</label>
-							<input type="text" class="input-text input-biger" maxlength="16" size="27" name="gateway_id" id="gateway_id" autocomplete="off" value="{{gateway.id}}">
+							<input type="text" class="input-text input-biger" maxlength="16" size="27" name="gateway_id" id="gateway_id" autocomplete="off" value="{{gateway.sn}}">
 						</div>
-						<div class="item">
+						<div class="item" hidden>
 							<label class="form-label" id="">网关MAC</label>
-							<input type="text" class="input-text input-biger" maxlength="16" size="27" name="gateway_mac" id="gateway_mac" autocomplete="off" value="{{gateway.mac}}">
+							<input type="text" class="input-text input-biger" maxlength="16" size="27" name="gateway_mac" id="gateway_mac" autocomplete="off" value="">
 						</div>
-						<div class="item">
+						<div class="item" hidden>
 							<label class="form-label" id="">鉴权码</label>
-							<input type="text" class="input-text input-biger" maxlength="16" size="27" name="gateway_key" id="gateway_key" autocomplete="off" value="{{gateway.key}}">
+							<input type="text" class="input-text input-biger" maxlength="16" size="27" name="gateway_key" id="gateway_key" autocomplete="off" value="">
 						</div>
 						<div class="item opt">
 							<input type="submit" class="btn submit_btn btn_confirm" onclick="mygateway_setup_submit()" value="确定">

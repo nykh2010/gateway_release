@@ -7,15 +7,16 @@ from hashlib import sha256
 class GatewayHandler(RequestHandler):
     @auth
     def get(self,method):
-        gateway = Config("gateway")
-        firmware = Config("firmware")
         if method == 'restart':
             self.render("restart.html")
         elif method == 'id':
+            gateway = Config("gateway")
             self.render("gateway_setup.html", gateway=gateway)
         elif method == 'firmware':
+            firmware = Config("firmware")
             self.render("upgrade.html", firmware=firmware)
         elif method == 'time':
+            firmware = Config("firmware")
             self.render("settime.html", firmware=firmware)
         elif method == 'restore':
             self.render("restore.html")
