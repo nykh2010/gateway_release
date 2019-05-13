@@ -76,10 +76,10 @@ class Wifi(Config):
         elif params['--command'] == 'get':
             try:
                 addr, netmask = self.get_inet()
-                print("mode:    %s" % self.mode)
-                print("ssid:    %s" % self.sta_ssid)
-                print("addr:    %s" % addr)
-                print("netmask: %s" % netmask)
+                print("mode:%s" % self.mode)
+                print("ssid:%s" % self.sta_ssid)
+                print("addr:%s" % addr)
+                print("netmask:%s" % netmask)
             except:
                 raise Exception("%s not found" % self.inet)
         else:
@@ -209,9 +209,9 @@ class Ethernet(Config):
         elif params['--command'] == 'get':
             try:
                 addr, netmask = self.get_inet()
-                print("mode:    %s" % self.mode)
-                print("addr:    %s" % addr)
-                print("netmask: %s" % netmask)
+                print("mode:%s" % self.mode)
+                print("addr:%s" % addr)
+                print("netmask:%s" % netmask)
             except:
                 raise Exception("%s not found" % self.inet)
         else:

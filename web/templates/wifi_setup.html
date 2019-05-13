@@ -4,7 +4,7 @@
 <div id="container_wrap">
     <div class="nav">
         <a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
-        <a href="javascript:void(0)">WiFi设置&nbsp;</a>
+        <a href="javascript:void(0)">网络设置&nbsp;</a>
         <button class="return_a" onclick="change_dir('/setup')">返回</button>
     </div>
     <div class="fix_ie_shadow"></div>
@@ -20,8 +20,8 @@
             }
         </script>
         <div id="wireless_type_layer" class="tab_area">
-            <div data-type-index="0" id="div_wireless_2_4_title" class="tab-item on" onclick="change_state('2_4')">2.4G WiFi设置</div>
-            <div data-type-index="1" id="div_wireless_5_title" class="tab-item" onclick="change_state('5')">5G WiFi设置</div>
+            <div data-type-index="0" id="div_wireless_2_4_title" class="tab-item on" onclick="change_state('2_4')">WiFi设置</div>
+            <div data-type-index="1" id="div_wireless_5_title" class="tab-item" onclick="change_state('5')">以太网设置</div>
         </div>
         <div id="wireless_2_4_layer">
             <div id="warning_count_center" class="grey-text section_hide">
@@ -30,9 +30,9 @@
             <form id="wireless_base_2_4_frm" class="form-area app-box" action="javascript:void(0);">
                 {% raw xsrf_form_html() %}
                 <div class="item">
-                    <label class="form-label" id="lbl_2_4_wireless_status">2.4G WiFi状态</label>
+                    <label class="form-label" id="lbl_2_4_wireless_status">WiFi状态</label>
                     <script type="text/javascript">
-                        {% if wifi.enable %}
+                        {% if wifi.mode != 'disable' %}
                             $("#wireless_2_4_enable").addClass("radio_on")
                         {% else %}
                             $("#wireless_2_4_enable").removeClass("radio_on")
@@ -81,24 +81,6 @@
                             $("#wireless_2_4_key_layer").removeClass("section_show").addClass('section_hide');
                         {% end %}
                     </script>
-                    <!-- <div class="item">
-                        <label class="form-label" id="lbl_wlb_2_4_channel_width">频道带宽</label>
-                        <select id="wlb_2_4_channel_width_sel" name="channel_width" style="width:258px;"><option value="4">自动</option><option value="2" selected="selected">20M(抗干扰能力强)</option><option value="3">40M(速度快)</option></select>
-                        <span id="wisp_channel_width_2_4_tip"></span>
-                    </div>
-                    <div class="item" id="wire_2_4_channel_sel_layer">
-                        <label class="form-label" id="lbl_wireless_base_2_4_channel_sel">无线信道</label>
-                        <select id="wireless_base_2_4_channel_sel" name="channel_num" style="width:258px;"><option value="0">自动</option><option value="1">信道 1</option><option value="2">信道 2</option><option value="3">信道 3</option><option value="4">信道 4</option><option value="5">信道 5</option><option value="6" selected="selected">信道 6</option><option value="7">信道 7</option><option value="8">信道 8</option><option value="9">信道 9</option><option value="10">信道 10</option><option value="11">信道 11</option><option value="12">信道 12</option><option value="13">信道 13</option></select>
-                        <span id="wisp_channel_2_4_tip"></span>
-                    </div>
-                    <div id="wire_2_4_channel_choose_layer" class="item">
-                        <a href="javascript:void(0);" id="wire_2_4_channel_choose" style="color: rgb(66, 139, 239); cursor: pointer;">智能优化无线</a>
-                    </div>
-                    <div class="item section_hide" id="same_layer">
-                        <label class="form-label"></label>
-                        <input id="same" type="checkbox">
-                        <label id="lbl_same" for="same">智能网络切换(2.4GHz和5GHz频段自动切换)</label>
-                    </div> -->
                 </div>
                 <div class="item opt">
                     <input id="wire_2_4_side_band_hidden" name="channel_band" value="1" type="hidden">
@@ -113,40 +95,24 @@
             <form id="wireless_base_5_frm" class="form-area app-box" action="javascript:void(0);">
                 {% raw xsrf_form_html() %}
                 <div class="item">
-                    <label class="form-label" id="lbl_wireless_5_status">5G WiFi状态</label>
-                    <div onclick="" id="wireless_5_enable" class="radio_form radio_off"></div><!--radio_toggle(this,'wireless_state_change');-->
-                    <input id="wireless_5_enable_hidden" name="wire_enable" type="hidden">
+                    <label class="form-label" id="lbl_wireless_5_status">以太网状态</label>
+                    <select id="eth_method" name="method" style="width:258px;">
+                        <option value="disable">Disable</option>
+                        <option value="dhcp">Automatic(DHCP)</option>
+                        <option value="static">Manual</option>
+                    </select>
+                    <script>
+                        var c = $("#eth_method").children("option[value={{eth.mode}}]").attr("selected","selected");
+                    </script>
                 </div>
                 <div id="wireless_base_5_layer">
                     <div class="item">
-                        <label class="form-label" id="lbl_5_ssid">WiFi名称(SSID)</label>
-                        <input class="input-text" id="wire_5_ssid" name="AP_SSID" maxlength="32" size="35" type="text">
-                    </div>
-                    <div class="item" style="margin-top:-10px;">
-                        <label class="form-label"></label>
-                        <input id="ck_5_ssid_broadcast" onclick="ssid_broadcast_change('5');" type="checkbox">
-                        <label id="lbl_5_ssid_broadcast" for="ck_5_ssid_broadcast">隐藏网络名称</label>
-                        <input name="ssid_broadcast" id="wire_5_ssid_broadcast_hidden" type="hidden">
-                    </div>
-                    
-                    <div class="item">
-                        <label class="form-label" id="lbl_wls_5_ap_mode_sel">加密方式</label>
-                        <select id="wls_5_ap_mode_sel" style="width:258px;" onchange="wireless_security_ap_change(this.value,'5')"><option value="0" selected="selected">无</option><option value="3">WPA2-PSK AES</option><option value="4">WPA/WPA2-PSK AES</option></select>
-                    </div>
-                    <div class="item section_hide" id="wireless_5_key_layer">
-                        <label class="form-label" id="lbl_wireless_5_key_val">WiFi密码</label>
-                        <input class="input-text" maxlength="63" id="wireless_5_key_val" name="wpa_key" size="35" onblur="remove_ck_pwd(this.id);" onkeyup="ck_pwd(this.id,this.value);" onfocus="ck_pwd(this.id,this.value);" type="text">
+                        <label class="form-label" id="lbl_5_ssid">IP地址</label>
+                        <input class="input-text" id="wire_address" name="wire_address" maxlength="32" size="35" type="text" value="{{eth.inet4_addr}}">
                     </div>
                     <div class="item">
-                        <label class="form-label" id="lbl_wlb_5_channel_width">频道带宽</label>
-                        <select id="wlb_5_channel_width_sel" name="channel_width" style="width:258px;" onchange="channel_sel_change(this.value)"><option value="6" selected="selected">自动</option><option value="2">20M</option><option value="3">40M</option><option value="5">80M</option></select>
-                    </div>
-                    <div class="item" id="channel_sel_layer">
-                        <label class="form-label" id="lbl_wireless_base_5_channel_sel">无线信道</label>
-                        <select id="wireless_base_5_channel_sel" name="channel_num" style="width:258px;" onchange="channel_width_change(this.value);"><option value="0" selected="selected">自动</option><option value="36">信道 36</option><option value="40">信道 40</option><option value="44">信道 44</option><option value="48">信道 48</option><option value="52">信道 52</option><option value="56">信道 56</option><option value="60">信道 60</option><option value="64">信道 64</option><option value="149">信道 149</option><option value="153">信道 153</option><option value="157">信道 157</option><option value="161">信道 161</option><option value="165">信道 165</option></select>
-                    </div>
-                    <div id="wire_5_channel_choose_layer" class="item">
-                        <a href="javascript:void(0);" id="wire_5_channel_choose">智能优化无线</a>
+                        <label class="form-label" id="lbl_wls_5_ap_mode_sel">子网掩码</label>
+                        <input class="input-text" id="wire_netmask" name="wire_netmask" maxlength="32" size="35" type="text" value="{{eth.netmask}}">
                     </div>
                 </div>
                 <div class="item opt">

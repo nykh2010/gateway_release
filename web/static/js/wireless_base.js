@@ -379,14 +379,24 @@ function wireless_base_2_4_5_set_func(type){
 
 function mywireless_base_set(type) {
 	var obj = {};
-		var xsrf_tmp = $("#wireless_base_"+ type +"_frm").children("input[name='_xsrf']").val();
-		obj._xsrf = xsrf_tmp;
+	var xsrf_tmp = $("#wireless_base_"+ type +"_frm").children("input[name='_xsrf']").val();
+	obj._xsrf = xsrf_tmp;
+	if (type == '5') {
+		// 以太网设置处理
+		obj.device = 'eth';
+		obj.mode = $("#eth_method").val();
+		obj.address = $('#wire_address').val();
+		obj.netmask = $('#wire_netmask').val();
+	}
+	else {
+		// wifi设置处理
+		obj.device = 'wifi';
 		if ($("#wireless_2_4_enable").hasClass("radio_on")) {
-            obj.enable = true;
-        }
-        else {
-            obj.enable = false;
-        }
+			obj.enable = true;
+		}
+		else {
+			obj.enable = false;
+		}
 		obj.sta_ssid = $("#wire_"+ type +"_ssid").val();
 		obj.encryption = $("#wls_"+type+"_ap_mode_sel_1").val();
 		obj.sta_passwd = $("#wireless_"+type+"_key_val").val();
@@ -394,29 +404,20 @@ function mywireless_base_set(type) {
 			show_message("error", "密码至少8位");
 			return;
 		}
-		show_message("save");
-		$.post("/wifi/update", obj, function (data){
-			if (data.status == "success") {
-				show_message("success");
-				return;
-			}
-			else {
-				show_message("error", data.err_msg);
-				eval("init_wireless_base_"+ type +"();");
-				return;
-			}
-
-			// var data = dataDeal(data);
-			// if (data == "SUCCESS") {
-			// 	show_message("success");
-			// 	return;
-			// }
-			// else {
-			// 	show_message("error", igd.make_err_msg(data));
-			// 	eval("init_wireless_base_"+ type +"();");
-			// 	return;
-			// }
-		});
+	}
+	
+	show_message("save");
+	$.post("/wifi/update", obj, function (data){
+		if (data.status == "success") {
+			show_message("success");
+			return;
+		}
+		else {
+			show_message("error", data.err_msg);
+			eval("init_wireless_base_"+ type +"();");
+			return;
+		}
+	});
 }
 
 function wireless_base_set(type,wirelessSetCallback) {

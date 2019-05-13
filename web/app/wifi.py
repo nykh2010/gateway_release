@@ -6,27 +6,34 @@ import time
 from tornado.log import app_log as LOG
 from configparser import ConfigParser
 from downlink import downlink
+import os
 
 class WifiHandler(RequestHandler):
+    connect_path = '/home/xulingfeng/project/gateway_release/system/connect.py'
+    def sent_cmd(self, cmd):
+        with os.popen(cmd) as fp:
+            res = fp.readlines()
+        return res
+
     @auth
     def get(self):
         wifi = Config("wifi")
-        self.render("wifi_setup.html", wifi=wifi)
+        ethernet = Config('ethernet')
+        self.render("wifi_setup.html", wifi=wifi, eth=ethernet)
     
     def post(self, method):
         ret = {}
         if method == 'update':
             try:
-                send_data = {
-                    "cmd":"set",
-                    "enable": self.get_argument('enable'),
-                    "ssid": self.get_argument('sta_ssid'),
-                    "encryption": self.get_argument('encryption'),
-                    "passwd": self.get_argument('sta_passwd')
-                }
-                status = downlink.send_service('wifi', send_data)
-                if status['status'] == 'error':
-                    raise Exception(status['msg'])                
+                device = self.get_argument('device')
+                if device == 'eth':
+                    self.sent_cmd("%s -i ethernet --command set --mode %s --addr %s --netmask %s" % \
+                        (self.connect_path, self.get_argument('mode'), self.get_argument('wire_address'), self.get_argument('wire_netmask')))
+                    ret['status'] = 'success'
+                else:
+                    self.sent_cmd("%s -i wifi --command set --mode %s --ssid %s --psk %s" % \
+                        (self.connect_path, 'sta', self.get_argument('sta_ssid'), self.get_argument('sta_passwd')))
+                    ret['status'] = 'success'
             except Exception as e:
                 LOG.error(e.__str__())
                 ret['status'] = 'failed'
