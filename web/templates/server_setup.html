@@ -39,53 +39,21 @@
 						<label class="form-label" id="">服务器端口</label>
 						<input name="sport" id="sport" size="27" maxlength="17" class="input-text input-big" autocomplete="off" value="{{server.port}}" type="text">
 					</div>
-					<div class="item" hidden>
-						<!-- KEY -->
-						<label class="form-label" id="">AUTH KEY</label>
-						<input name="skey" id="skey" size="27" maxlength="17" class="input-text input-big" autocomplete="off" value="{{server.auth_key}}" type="text">
-					</div>
-					<div class="item" hidden>
-						<!-- 网关id -->
-						<label class="form-label" id="">网关ID</label>
-						<input name="gid" id="gid" size="27" maxlength="17" class="input-text input-big" autocomplete="off" value="{{gateway.id}}" type="text">
-					</div>
-					<div class="item" hidden>
-						<!-- MAC地址 -->
-						<label class="form-label" id="">MAC地址</label>
-						<input name="gmac" id="gmac" size="27" maxlength="17" class="input-text input-big" autocomplete="off" value="{{gateway.mac}}" type="text">
-					</div>
-					<div class="item">
-						<!-- 连接方式：无线/有线 -->
-						<label class="form-label">无线连接服务器</label>
-                   		<div id="ethernet_enable" class="radio_form radio_off" onclick="myradio_toggle(this)"></div>
-					</div>
-					<div id="ethernet_enable_hide" class="section section_hide">
-						<div class="item">
-							<!-- WIFI SSID -->
-							<label class="form-label" id="">WIFI SSID</label>
-							<input name="ssid" id="ssid" size="27" maxlength="17" class="input-text input-big" autocomplete="off" value="{{server.ssid}}" type="text">
-						</div>
-						<div class="item">
-							<!-- WIFI 密码 -->
-							<label class="form-label" id="">WIFI 密码</label>
-							<input name="passwd" id="passwd" size="27" maxlength="17" class="input-text input-big" autocomplete="off" value="{{server.passwd}}" type="text">
-						</div>
-					</div>
 					<script>
-						if ({{server.wireless}}) {
-							$("#ethernet_enable").removeClass("radio_off").addClass("radio_on");
-							$("#ethernet_enable_hide").removeClass("section_hide").addClass("section_show");
-						}
-						function myradio_toggle(obj) {
-							if ($(obj).hasClass("radio_on")) {
-								$(obj).removeClass("radio_on").addClass("radio_off");
-								$("#ethernet_enable_hide").removeClass("section_show").addClass("section_hide");
-							}
-							else {
-								$(obj).removeClass("radio_off").addClass("radio_on");
-								$("#ethernet_enable_hide").removeClass("section_hide").addClass("section_show");
-							}
-						}
+						// if ({{server.wireless}}) {
+						// 	$("#ethernet_enable").removeClass("radio_off").addClass("radio_on");
+						// 	$("#ethernet_enable_hide").removeClass("section_hide").addClass("section_show");
+						// }
+						// function myradio_toggle(obj) {
+						// 	if ($(obj).hasClass("radio_on")) {
+						// 		$(obj).removeClass("radio_on").addClass("radio_off");
+						// 		$("#ethernet_enable_hide").removeClass("section_show").addClass("section_hide");
+						// 	}
+						// 	else {
+						// 		$(obj).removeClass("radio_off").addClass("radio_on");
+						// 		$("#ethernet_enable_hide").removeClass("section_hide").addClass("section_show");
+						// 	}
+						// }
 					</script>
 					<div class="item opt">
 						<input class="btn submit_btn btn_confirm" onclick="myserver_config();" value="确定" type="submit">
@@ -93,133 +61,6 @@
 					<script>
 						
 					</script>
-
-<!--
-					<div class="item">
-						<label class="form-label" id="lbl_wan_setup_mac1">MAC地址</label>
-						<input name="mac" id="wan_setup_mac1" size="27" maxlength="17" class="input-text input-big" autocomplete="off" value="A8-6B-7C-3A-AB-1C" type="text">
-						<input class="btn margin-h gray btn_clone_mac" onclick="set_mac_clone(1)" value="MAC地址克隆" type="button">
-						<input class="btn gray btn_recover_mac" onclick="resume_mac(1)" value="恢复缺省MAC" type="button">
-					</div>
-					<div class="item section_hide">
-						<label class="form-label" id="lbl_wan_setup_up_bandwidth1" for="wan_setup_up_bandwidth1">线路带宽</label>
-						<span class="word_sep" id="span_up_bandwidth1">上行</span>
-						<input id="wan_setup_up_bandwidth1" name="up_bandwidth" size="4" maxlength="4" class="txt txt_normal" value="0.00" type="text">
-						<span class="word_sep">Mbit/s</span>
-						<span class="word_sep" id="span_down_bandwidth1">下行</span>
-						<input id="wan_setup_down_bandwidth1" name="down_bandwidth" size="4" maxlength="4" class="txt txt_normal" value="0.00" type="text">
-						<span class="word_sep">Mbit/s</span>
-					</div>
-					<div id="wan_dhcp_isp" class="item section_hide">
-						<label class="form-label" for="isp_radio1" id="lbl_isp_type">网络服务商</label>
-						<input class="input-radio" name="isp_radio" value="CHINATELECOM" checked="checked" onclick="set_isp_value(this.value,1)" id="isp_radio1" type="radio">
-						<label for="isp_radio1" id="lbl_isp_radio1">电信</label>
-						&nbsp;&nbsp;
-						<input class="input-radio" name="isp_radio" value="CNCGROUP" onclick="set_isp_value(this.value,1)" id="isp_radio2" type="radio">
-						<label for="isp_radio2" id="lbl_isp_radio2">联通</label>
-						&nbsp;&nbsp;
-						<input class="input-radio" name="isp_radio" value="AUTO" onclick="set_isp_value(this.value,1)" id="isp_radio3" type="radio">
-						<label for="isp_radio3" id="lbl_isp_radio3">自动识别</label>
-						<input name="isp" id="isp1" value="CHINATELECOM" type="hidden">
-					</div>
-					<div class="item section_hide">
-						<label class="form-label" for="detec_on" id="lbl_detect">线路通断检测</label>
-						<input class="input-radio" name="line_detect" id="detec_on" value="1" onclick="set_detect_value(this.value);" checked="checked" type="radio">
-						<label for="detec_on" id="lbl_detect_on">开启</label>
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input class="input-radio" name="line_detect" id="detec_off" value="0" onclick="set_detect_value(this.value);" type="radio">
-						<label for="detec_off" id="lbl_detect_off">关闭</label>
-						<input name="line_detect" id="line_detect" value="0" type="hidden"></div>
-					<div class="item section_hide">
-						<label class="form-label" for="fmac_time0" id="lbl_cut_time">线路断线时间</label>
-						<input class="input-radio" name="time" value="0" onclick="cut_timer_change(this.value)" checked="checked" id="fmac_time0" type="radio">
-						<label for="fmac_time0" id="lbl_fmac_time0">无</label>
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input class="input-radio" name="time" value="1" onclick="cut_timer_change(this.value)" id="fmac_time1" type="radio">
-						<label for="fmac_time1" id="lbl_fmac_time1">时间段</label>
-						<input name="timer_enable" id="cut_time_hidden" value="0" type="hidden">
-					</div>
-					<div id="cut_time_set_body" class="item section_hide">
-						<span class="item_text" id="span_week">星期</span>
-						<span class="item_content fix_check">
-							<input class="input-chx" name="monday" value="1" id="wan_day0" type="checkbox">
-							<label for="wan_day0" id="lbl_wan_day0">星期一</label>
-							<input class="input-chx" name="tuesday" value="2" id="wan_day1" type="checkbox">
-							<label for="wan_day1" id="lbl_wan_day1">星期二</label>
-							<input class="input-chx" name="wednesday" value="3" id="wan_day2" type="checkbox">
-							<label for="wan_day2" id="lbl_wan_day2">星期三</label>
-							<input class="input-chx" name="thursday" value="4" id="wan_day3" type="checkbox">
-							<label for="wan_day3" id="lbl_wan_day3">星期四</label>
-							<input class="input-chx" name="friday" value="5" id="wan_day4" type="checkbox">
-							<label for="wan_day4" id="lbl_wan_day4">星期五</label>
-							<input class="input-chx" name="saturday" value="6" id="wan_day5" type="checkbox">
-							<label for="wan_day5" id="lbl_wan_day5">星期六</label>
-							<input class="input-chx" name="sunday" value="7" id="wan_day6" type="checkbox">
-							<label for="wan_day6" id="lbl_wan_day6">星期日</label>
-							<input name="timer_day" id="wan_day" value="" type="hidden">
-						</span>
-					</div>
-					<div class="item section_hide">
-						<label class="form-label" for="wan_start_hour" id="span_time_set">时间</label>
-						<input maxlength="2" size="5" name="start_hour" id="wan_start_hour" class="txt txt_normal" autocomplete="off" type="text">
-						<span class="word_sep">
-							<label for="wan_start_hour" id="lbl_wan_start_hour">时</label>
-						</span>
-						<input maxlength="2" size="5" name="start_minute" id="wan_start_min" class="txt txt_normal" autocomplete="off" type="text">
-						<span class="word_sep">
-							<label for="wan_start_min" id="lbl_wan_start_min">分</label>
-						</span>
-						<span class="word_sep">---</span>
-						<input maxlength="2" size="5" name="end_hour" id="wan_end_hour" class="txt txt_normal" autocomplete="off" type="text">
-						<span class="word_sep">
-							<label for="wan_end_hour" id="lbl_wan_end_hour">时</label>
-						</span>
-						<input maxlength="2" size="5" name="end_minute" id="wan_end_min" class="txt txt_normal" autocomplete="off" s="" type="text">
-						<span class="word_sep">
-							<label for="wan_end_min" id="lbl_wan_end_min">分</label>
-						</span>
-					</div>
-					<div class="item">
-						<label class="form-label"></label>
-						<a class="default_link" href="javascript:void(0);" id="wan_advance_link" onclick="wan_advance_toggle(1);">高级设置&gt;&gt;</a>
-					</div>
-					<div id="advance_body" class="section_hide">
-						<div class="item">
-							<label class="form-label">MTU</label>
-							<input name="mtu" class="input-text input-small" id="wan_setup_mtu1" value="1500" size="4" maxlength="4" type="text">
-							<span class="word_sep">(576-1500)</span>
-						</div>
-						<div class="item">
-							<label class="form-label" id="lbl_wan_setup_dns11">主DNS</label>
-							<input class="input-text input-biger" id="wan_setup_dns11" name="dns1" maxlength="15" size="27" autocomplete="off" type="text">
-							<span class="word_sep" id="span_dns11_choose">(可选)</span>
-						</div>
-						<div class="item">
-							<label class="form-label" id="lbl_wan_setup_dns12">从DNS</label>
-							<input class="input-text input-biger" id="wan_setup_dns12" name="dns2" maxlength="15" size="27" autocomplete="off" type="text">
-							<span class="word_sep" id="span_dns12_choose">(可选)</span>
-						</div>
-						<div class="item">
-							<label class="form-label" id="lbl_work_mode">工作模式</label>
-							<input class="input-radio" name="work_mode_radio" id="work_mode_radio1" value="NAT" onclick="set_work_mode_value(1,this.value)" checked="checked" type="radio">
-							<label for="work_mode_radio1" id="lbl_work_mode_radio1">启用NAT模式</label>
-							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<input class="input-radio" name="work_mode_radio" id="work_mode_radio2" value="ROUTE" onclick="set_work_mode_value(1,this.value)" type="radio">
-							<label for="work_mode_radio2" id="lbl_work_mode_radio2">启用非NAT模式</label>
-							<input name="work_mode" id="work_mode1" value="NAT" type="hidden">
-						</div>
-						<div class="item">
-							<label class="form-label" id="lbl_wan1_select">WAN口配置</label>
-							<select id="wan1_select" style="width:168px;"><option value="auto" selected="selected">自动模式</option><option value="10f">10M全双工</option><option value="10h">10M半双工</option><option value="100f">100M全双工</option><option value="100h">100M半双工</option><option value="1000f">1000M全双工</option></select>
-						</div>
-					</div>
-					<div class="item opt">
-						<input class="btn submit_btn btn_confirm" onclick="submit_wan_config(1);" value="确定" type="submit">
-					</div>
-				</form>
-			</div>
-		</div>
-	-->
 	</div>
 </div>
 {% end %}

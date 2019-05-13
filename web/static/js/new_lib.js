@@ -3636,22 +3636,22 @@ function myserver_config() {
         return;
     }
     obj.port = $("#sport").val();
-    obj.key = $("#skey").val();
-    if (obj.key.length < 16) {
-        show_message("error", "auth key长度小于16");
-        return;
-    }
-    obj.gid = $("#gid").val();
-    obj.gmac = $("#gmac").val();
-    obj.wireless_enable = $("#ethernet_enable").hasClass("radio_on");
-    if (obj.wireless_enable) {
-        obj.ssid = $("#ssid").val();
-        obj.passwd = $("#passwd").val();
-        if (obj.passwd.length < 8) {
-            show_message("error", "密码长度小于8位");
-            return;
-        }
-    }
+    // obj.key = $("#skey").val();
+    // if (obj.key.length < 16) {
+    //     show_message("error", "auth key长度小于16");
+    //     return;
+    // }
+    // obj.gid = $("#gid").val();
+    // obj.gmac = $("#gmac").val();
+    // obj.wireless_enable = $("#ethernet_enable").hasClass("radio_on");
+    // if (obj.wireless_enable) {
+    //     obj.ssid = $("#ssid").val();
+    //     obj.passwd = $("#passwd").val();
+    //     if (obj.passwd.length < 8) {
+    //         show_message("error", "密码长度小于8位");
+    //         return;
+    //     }
+    // }
     $.post("/server/update", obj, function(data) {
         if (data.status == 'success') {
             show_message("success");

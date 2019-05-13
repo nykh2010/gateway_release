@@ -44,7 +44,7 @@ class AuthHandler(RequestHandler):
                 ret['status'] = 'success'
             else:
                 ret['status'] = 'failed'
-            self.set_cookie('token_id', str(uuid.uuid4()))
+            self.set_cookie('token_id', str(uuid.uuid4()), expires_days=1)
         self.write(ret)
         # print(self.get_arguments('pass'))
 
@@ -59,3 +59,8 @@ class LoginHandler(RequestHandler):
             self.redirect('/setup')
         else:
             self.render("login.html")
+
+class LogoutHandler(RequestHandler):
+    def get(self):
+        self.clear_cookie('token_id')
+        self.redirect("/")

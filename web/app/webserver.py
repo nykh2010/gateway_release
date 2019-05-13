@@ -12,7 +12,7 @@ from threading import Thread
 import re
 import sys
 from gateway import GatewayHandler
-from auth import AuthHandler,LoginHandler
+from auth import AuthHandler,LoginHandler,LogoutHandler
 from log import LogHandler
 from radio import RadioHandler
 from server import ServerHandler
@@ -43,7 +43,8 @@ def main():
     # tornado.options.parse_command_line()
     app = tornado.web.Application(
         [
-            (r'/',LoginHandler),            
+            (r'/',LoginHandler),   
+            (r'/logout', LogoutHandler),         
             (r'/server/(.*?)',ServerHandler),
             (r'/server',ServerHandler),
             (r'/gateway/(.*?)/(.*?)',GatewayHandler),
