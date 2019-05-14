@@ -80,14 +80,15 @@ class Gateway(Config):
     def create_task(self, task_id, image_data_id, image_data_url,\
             image_data_md5, iot_dev_list_md5, iot_dev_list_url, start_time, end_time):
         epd_task = EpdTask(self.task_url)
-        os.system("wget %s -O %s.tmp" % (image_data_url, epd_task.data_url))
-        os.system("wget %s -O %s.tmp" % (iot_dev_list_url, epd_task.execute_url))
-        ret = self.check_task_integrity(image_data_md5, iot_dev_list_md5)
-        if not ret:
-            return False
 
         # 0-none 1-sleep 2-ready 3-run 4-finish 5-suspend
         if self.__taskId == 0 or (task_id != self.__taskId and self.__taskStatus in ('','0','1','4','5')):
+            # 下载任务
+            os.system("wget %s -O %s.tmp" % (image_data_url, epd_task.data_url))
+            os.system("wget %s -O %s.tmp" % (iot_dev_list_url, epd_task.execute_url))
+            ret = self.check_task_integrity(image_data_md5, iot_dev_list_md5)
+            if not ret:
+                return False
             # 保存任务状态
             epd_task.set_item('task_id', str(task_id))
             epd_task.set_item('image_data_id', str(image_data_id))

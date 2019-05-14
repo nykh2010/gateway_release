@@ -88,7 +88,7 @@ class OnlineRequest(Handle):
                     "d": [{
                         "nid": device_id,
                         "d":{
-                            "image_data_id": data_id,
+                            "image_data_id": int(data_id),
                             "interval": request['interval'],
                             "battery": request['battery']
                         }
@@ -98,7 +98,7 @@ class OnlineRequest(Handle):
                 if ts in ('0','4','5'): # 没有任务或任务已结束
                     data = {
                         'nid': device_id,
-                        'image_data_id': data_id,
+                        'image_data_id': int(data_id),
                         'sn': gw.get_gw_id()
                     }
                     LOG.info("start query")
@@ -123,10 +123,10 @@ class OnlineRequest(Handle):
                             task_start = {
                                 "cmd":"task",
                                 "method":"create",
-                                "task_id":data['task_id'],
-                                "data_id":data['image_data_id'],
-                                "start_time":data['start_time'],
-                                "end_time":data['end_time']
+                                "task_id":send_data['task_id'],
+                                "data_id":send_data['data_id'],
+                                "start_time":send_data['start_time'],
+                                "end_time":send_data['end_time']
                             }
                             ret = dl.send_service('serial', task_start, need_resp=True)
                             if ret['status'] != 'ok':
