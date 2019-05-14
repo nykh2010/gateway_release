@@ -73,21 +73,25 @@ class OnlineRequest(Handle):
                 # 注册上报
                 LOG.info("%s register", device_id)
                 upload_data = {
-                    "nid": device_id,
-                    "d": {
-                        "firmware": firmware
-                    }
+                    "d": [{
+                        "nid": device_id,
+                        "d":{
+                            "firmware": firmware
+                        }
+                    }]
                 }
             elif data_id:
                 # 心跳上报
                 # 准备上报数据
                 upload_data = {
-                    "nid": device_id,
-                    "d": {
-                        "image_data_id": data_id,
-                        "interval": request['interval'],
-                        "battery": request['battery']
-                    }
+                    "d": [{
+                        "nid": device_id,
+                        "d":{
+                            "image_data_id": data_id,
+                            "interval": request['interval'],
+                            "battery": request['battery']
+                        }
+                    }]
                 }
                 ts = gw.get_task_status()
                 if ts in ('0','4','5'): # 没有任务或任务已结束

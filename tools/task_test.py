@@ -159,14 +159,15 @@ class Serial:
             "interval":10
         }
         content = self.dl.send_service('epd', data)
-        print('task_id: ' + str(content['task_id']))
-        print('data_id: ' + content['data_id'])
-        print('start_time: ' + content['start_time'])
-        print('end_time: ' + content['end_time'])
-        self.task_id = content['task_id']
-        self.data_id = content['data_id']
-        self.start_time = content['start_time']
-        self.end_time = content['end_time']
+        print(content)
+        # print('task_id: ' + str(content['task_id']))
+        # print('data_id: ' + content['data_id'])
+        # print('start_time: ' + content['start_time'])
+        # print('end_time: ' + content['end_time'])
+        # self.task_id = content['task_id']
+        # self.data_id = content['data_id']
+        # self.start_time = content['start_time']
+        # self.end_time = content['end_time']
     
     def task_start(self):
         data = {
@@ -191,10 +192,10 @@ class Serial:
         print(content)
 
 serial = Serial()
-# serial.online()
+serial.online()
 # time.sleep(20)
 # serial.task_start()
 # time.sleep(20)
-serial.task_end()
+# serial.task_end()
 # time.sleep(100)
 
