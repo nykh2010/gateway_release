@@ -114,6 +114,19 @@ class OnlineRequest(Handle):
                             send_data['data_id'] = gw.get_data_id()
                             send_data['start_time'] = start_time
                             send_data['end_time'] = end_time
+
+                            # 向serial发送任务开始命令
+                            task_start = {
+                                "cmd":"task",
+                                "method":"create",
+                                "task_id":data['task_id'],
+                                "data_id":data['image_data_id'],
+                                "start_time":data['start_time'],
+                                "end_time":data['end_time']
+                            }
+                            ret = dl.send_service('serial', task_start, need_resp=True)
+                            if ret['status'] != 'ok':
+                                gw.set_try_data('serial', task_start)
                         else:
                             # 创建失败上报
                             pass
