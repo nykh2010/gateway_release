@@ -65,9 +65,10 @@ class OnlineRequest(Handle):
     def func(self, request):
         try:
             send_data = dict()
+            upload_data = None
             device_id = request['device_id']
             firmware = request.get('firmware', None)
-            data_id = request.get('data_id', None)
+            data_id = request.get('data_id', "0")
             interval = request.get('interval', None)
             if firmware:
                 # 注册上报
@@ -101,7 +102,7 @@ class OnlineRequest(Handle):
                         'sn': gw.get_gw_id()
                     }
                     LOG.info("start query")
-                    resp = self.query_task('http://10.10.36.5:8000/v1/tasks/gwtasks/assign', data)
+                    resp = self.query_task('http://10.252.97.88/iotgw/api/v1/tasks/gwtasks/assign', data)
                     LOG.info("get response")
                     if resp:
                         # 应答成功，保存任务状态，下发时间，下载任务
@@ -144,7 +145,8 @@ class OnlineRequest(Handle):
             send_data['status'] = 'error'
             LOG.error(e.__repr__())
         finally:
-            self.upload(upload_data)
+            if upload_data:
+                self.upload(upload_data)
             return send_data
     
     def upload(self, data):
