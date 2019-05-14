@@ -155,7 +155,7 @@ class Serial:
             "cmd":"online",
             "device_id":"0102030405060001",
             "data_id":10,
-            "battery":100,
+            "battery":50,
             "interval":10
         }
         content = self.dl.send_service('epd', data)
