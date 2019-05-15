@@ -81,6 +81,7 @@ class OnlineRequest(Handle):
                         }
                     }]
                 }
+                topic = 'dma/report/periph/reg'
             elif data_id:
                 # 心跳上报
                 # 准备上报数据
@@ -94,6 +95,7 @@ class OnlineRequest(Handle):
                         }
                     }]
                 }
+                topic = 'dma/report/periph'
                 ts = gw.get_task_status()
                 if ts in ('0','4','5'): # 没有任务或任务已结束
                     data = {
@@ -159,12 +161,13 @@ class OnlineRequest(Handle):
             LOG.error(e.__repr__())
         finally:
             if upload_data:
-                self.upload(upload_data)
+                self.upload(topic, upload_data)
             return send_data
     
-    def upload(self, data):
+    def upload(self, topic, data):
         # 上传信息
-        super().upload('dma/report/periph', data)
+        super().upload(topic, data)
+        # super().upload('dma/report/periph', data)
 
 class TaskRequest(Handle):
     def func(self, data):
