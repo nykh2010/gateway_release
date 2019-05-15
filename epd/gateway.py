@@ -82,7 +82,7 @@ class Gateway(Config):
         epd_task = EpdTask(self.task_url)
 
         # 0-none 1-sleep 2-ready 3-run 4-finish 5-suspend
-        if self.__taskId == 0 or (task_id != self.__taskId and self.__taskStatus in ('','0','1','4','5')):
+        if self.__taskId == 0 or (task_id != self.__taskId and self.__taskStatus in ('','0','4','5')):
             # 下载任务
             os.system("wget %s -O %s.tmp" % (image_data_url, epd_task.data_url))
             os.system("wget %s -O %s.tmp" % (iot_dev_list_url, epd_task.execute_url))
