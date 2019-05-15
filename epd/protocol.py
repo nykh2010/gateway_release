@@ -194,7 +194,7 @@ class TaskRequest(Handle):
             # 上传执行状态
             upload_data['task_id'] = task_id
             upload_data['status'] = status
-            self.upload('gateway/report/task/result', upload_data)
+            self.upload('gateway/report/task/status', upload_data)
             send_data['status'] = 'ok'
         except Exception as e:
             LOG.error(e.__str__())

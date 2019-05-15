@@ -143,7 +143,7 @@ class Gateway(Config):
 
     def report_task_status(self):
         data = {
-            'topic': 'gateway/report/task/result'',
+            'topic': 'gateway/report/task/status',
             "payload": {
                 "d": {
                     'task_id': int(self.__taskId),
