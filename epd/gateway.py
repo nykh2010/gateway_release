@@ -132,14 +132,27 @@ class Gateway(Config):
             if task_status != '4' and (cur_time > end_time):
                 LOG.info("task %s execute timeout", task_id)
                 self.set_task_status(task_id, '4')
+                self.report_task_status()
             elif task_status == '4':
                 pass
             else:
                 timer = threading.Timer(60, self.set_task_monitor)
                 timer.start()
         except:
-            pass
-            
+            pass  
+
+    def report_task_status(self):
+        data = {
+            'topic': 'gateway/report/task/result'',
+            "payload": {
+                "d": {
+                    'task_id': int(self.__taskId),
+                    'status': int(self.__taskStatus)
+                }
+            }
+        }
+        upload = uplink.Upload()
+        upload.send('http://127.0.0.1:7788/mqtt/publish/offlinecache', data)
 
     def set_task_status(self, task_id, task_status):
         if self.__taskId != task_id:
