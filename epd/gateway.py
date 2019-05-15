@@ -103,7 +103,7 @@ class Gateway(Config):
             os.system("mv %s.tmp %s" % (epd_task.execute_url, epd_task.execute_url))
             self.__taskId = self.get_task_id()
             self.__taskStatus = self.get_task_status()     # 更新任务状态
-            self.set_task_monitor(self)
+            self.set_task_monitor()
             return True
         else:
             LOG.info("task status not allowed, status:%s", self.__taskStatus)
@@ -123,19 +123,19 @@ class Gateway(Config):
     def set_task_monitor(self):
         try:
             task_status = self.get_task_status()
-            if task_status == 0:
+            if task_status == '0':
                 return
             start_time, end_time = self.get_task_time()
             end_time = mktime(strptime(end_time, "%Y-%m-%d %H:%M:%S"))
             cur_time = time()
             task_id = self.get_task_id()
-            if task_status != 4 and (cur_time > end_time):
+            if task_status != '4' and (cur_time > end_time):
                 LOG.info("task %s execute timeout", task_id)
-                self.set_task_status(task_id, 4)
-            elif task_status == 4:
+                self.set_task_status(task_id, '4')
+            elif task_status == '4':
                 pass
             else:
-                timer = threading.Timer(handler_interval, self.set_task_monitor)
+                timer = threading.Timer(60, self.set_task_monitor)
                 timer.start()
         except:
             pass
@@ -180,7 +180,7 @@ class Gateway(Config):
 
     def get_task_status(self):
         epd_task = EpdTask(self.task_url)
-        return int(epd_task.task_status)
+        return epd_task.task_status
 
     def get_server_url(self):
         host = self.get('server', 'host')

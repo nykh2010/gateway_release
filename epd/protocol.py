@@ -97,6 +97,7 @@ class OnlineRequest(Handle):
                 }
                 topic = 'dma/report/periph'
                 ts = gw.get_task_status()
+                LOG.info("task status: %s", ts)
                 if ts in ('0','4','5'): # 没有任务或任务已结束
                     data = {
                         'nid': device_id,
