@@ -20,6 +20,7 @@ class Gateway(Config):
     __taskStatus = 0
     __whiteListMD5 = ""
     __whitelist = set()
+    pending_list = set()
     def __init__(self):
         super().__init__('gateway')
         # 启动定时任务
@@ -55,6 +56,19 @@ class Gateway(Config):
             os.system("mv %s.tmp %s" % (self.white_list_url, self.white_list_url))
             self.__whiteListMD5 = self.get_whitelist()
             return True
+
+    def create_pending_list(self):
+        self.pending_list.clear()
+
+    def save_pending_list(self):
+        with open('/tmp/pending', 'w') as fp:
+            fp.writelines(self.pending_list)
+
+    def add_pending_list(self, device_id):
+        self.pending_list.add(device_id)
+
+    def get_pending_list(self):
+        return self.pending_list
     
     def check_whitelist_integrity(self, md5):
         hash_obj = hashlib.md5()
@@ -83,7 +97,7 @@ class Gateway(Config):
         epd_task = EpdTask(self.task_url)
 
         # 0-none 1-sleep 2-ready 3-run 4-finish 5-suspend
-        if self.__taskId == 0 or (task_id != self.__taskId and self.__taskStatus in ('','0','4','5')):
+        if self.__taskId == 0 or (self.__taskStatus in ('','0','4','5')):
             # 下载任务
             os.system("wget %s -O %s.tmp" % (image_data_url, epd_task.data_url))
             os.system("wget %s -O %s.tmp" % (iot_dev_list_url, epd_task.execute_url))
@@ -129,7 +143,7 @@ class Gateway(Config):
             end_time = mktime(strptime(end_time, "%Y-%m-%d %H:%M:%S"))
             cur_time = time()
             task_id = self.get_task_id()
-            if task_status != '4' and (cur_time > end_time):
+            if task_status != '4' and (cur_time > end_time+60):     # 结束1分钟之后没有收到结束信号就主动结束
                 LOG.info("task %s execute timeout", task_id)
                 self.set_task_status(task_id, '4')
                 self.report_task_status()
@@ -147,7 +161,9 @@ class Gateway(Config):
             "payload": {
                 "d": {
                     'task_id': int(self.__taskId),
-                    'status': int(self.__taskStatus)
+                    'status': int(self.__taskStatus),
+                    'success_list': [],
+                    'failed_list': list(self.pending_list)
                 }
             }
         }
@@ -252,13 +268,19 @@ class Gateway(Config):
         timer = threading.Timer(handler_interval, self.timer_handler)
         timer.start()
 
+    try_count = 5
     def try_handler(self, service_name, data):
         ret = dl.send_service(service_name, data, need_resp=True)
         if ret['status'] != 'ok':
-            t = threading.Timer(5, self.try_handler, args=(service_name, data))
-            t.start()
+            if self.try_count:
+                t = threading.Timer(5, self.try_handler, args=(service_name, data))
+                t.start()
+                self.try_count = self.try_count - 1
+            else:
+                LOG.error('%s service lost connection', service_name)
 
     def set_try_data(self, service_name, data):
+        self.try_count = 5
         t = threading.Timer(5, self.try_handler, args=(service_name, data))
         t.start()
 

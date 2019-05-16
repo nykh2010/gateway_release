@@ -134,6 +134,10 @@ class OnlineRequest(Handle):
                             ret = dl.send_service('serial', task_start, need_resp=True)
                             if ret['status'] != 'ok':
                                 gw.set_try_data('serial', task_start)
+
+                            # 添加待执行表
+                            gw.create_pending_list()
+                            gw.add_pending_list(device_id)
                         else:
                             # 创建失败上报
                             pass
@@ -180,7 +184,7 @@ class TaskRequest(Handle):
             if not ret:
                 raise Exception('task %d not exist' % task_id)
             upload_data = {}
-            if status == 3:
+            if status == 4:
                 with open("/tmp/success") as successfile:
                     content = successfile.read()
                     success_list = content.split('\n')
@@ -190,7 +194,12 @@ class TaskRequest(Handle):
                 os.unlink('/tmp/success')       # 删除文件
                 os.unlink('/tmp/fail')
                 upload_data['success_list'] = success_list
-                upload_data['failed_list'] = fail_list                
+                upload_data['failed_list'] = fail_list    
+            elif status == 3:
+                # 保存待执行列表到文件
+                gw.save_pending_list()
+            else:
+                pass            
             # 上传执行状态
             upload_data['task_id'] = task_id
             upload_data['status'] = status

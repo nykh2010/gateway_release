@@ -6,7 +6,7 @@ import sys
 import os
 from epd_log import epdlog as LOG
 
-version = 'v1.0.1'
+version = '1.0.1'
 
 def write_version():
     with os.popen("echo %s > /etc/gateway/epd.version" % version) as fp:
