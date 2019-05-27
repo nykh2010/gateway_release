@@ -101,7 +101,8 @@ class OnlineRequest(Handle):
                 if ts in ('0','4','5'): # 没有任务或任务已结束
                     data = {
                         'nid': device_id,
-                        'image_data_id': int(data_id),
+                        # 'image_data_id': int(data_id),
+                        'image_data_id': int(gw.get_data_id()),
                         'sn': gw.get_gw_id()
                     }
                     LOG.info("start query")
@@ -151,6 +152,7 @@ class OnlineRequest(Handle):
                         send_data['data_id'] = gw.get_data_id()
                         send_data['start_time'] = start_time
                         send_data['end_time'] = end_time
+                        gw.add_pending_list(device_id)
                 else:
                     # 其他情况处理
                     pass
@@ -188,13 +190,13 @@ class TaskRequest(Handle):
                 with open("/tmp/success") as successfile:
                     content = successfile.read()
                     success_list = content.split('\n')
-                with open("/tmp/fail") as failfile:
-                    content = failfile.read()
-                    fail_list = content.split('\n')
+                # with open("/tmp/fail") as failfile:
+                #     content = failfile.read()
+                #     fail_list = content.split('\n')
                 os.unlink('/tmp/success')       # 删除文件
-                os.unlink('/tmp/fail')
+                # os.unlink('/tmp/fail')
                 upload_data['success_list'] = success_list
-                upload_data['failed_list'] = fail_list    
+                upload_data['failed_list'] = gw.get_failed_list(success_list)
             elif status == 3:
                 # 保存待执行列表到文件
                 gw.save_pending_list()
