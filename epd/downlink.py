@@ -16,17 +16,20 @@ class DownlinkServer(StreamRequestHandler):
                 return app[1]
         return None
     def handle(self):
-        data = self.request.recv(1024)
-        data = data.decode('utf-8')
-        data = json.loads(data, encoding='utf-8')
-        LOG.info("downlink recv: %s", data)
-        HandleClass = self.route(data)
-        handler = HandleClass()
-        send_data = handler.func(data)
-        if isinstance(send_data, dict):
-            content = json.dumps(send_data)
-            LOG.info("downlink send: %s", content)
-            self.wfile.write(content.encode('utf-8'))
+        try:
+            data = self.request.recv(1024)
+            data = data.decode('utf-8')
+            data = json.loads(data, encoding='utf-8')
+            LOG.info("downlink recv: %s", data)
+            HandleClass = self.route(data)
+            handler = HandleClass()
+            send_data = handler.func(data)
+            if isinstance(send_data, dict):
+                content = json.dumps(send_data)
+                LOG.info("downlink send: %s", content)
+                self.wfile.write(content.encode('utf-8'))
+        except Exception as e:
+            LOG.error('%s exception: data: %s', e.__str__(), str(data))
 
 
 class Downlink(UnixStreamServer):
