@@ -59,8 +59,13 @@ from threading import Thread
 import json
 import sys
 
+class TaskHandler:
+    def func(self, data):
+        send_data = {'status':'ok'}
+        return send_data
+
 apps = [
-    
+    ('task', TaskHandler)
 ]
 
 class DownlinkServer(StreamRequestHandler):
@@ -135,21 +140,29 @@ class Downlink(UnixStreamServer):
                 self.__client.close()
                 return content
 
-class Serial:
-    dl = Downlink()
+class Serial(Downlink):
     task_id = 0
     task_status = 0
     data_id = 0
     start_time = 0
     end_time = 0
-    def check(self):
+    def heart(self):
         data = {
             'cmd':'heart',
             'device_id': '0102030405060001',
         }
-        content = self.dl.send_service('epd', data)
+        content = self.send_service('epd', data)
         print(content)
     
+    def register(self):
+        data = {
+            'cmd':'register',
+            'device_id':'0102030405060001',
+            'firmware':'1.0.0'
+        }
+        content = self.send_service('epd', data)
+        print(content)
+
     def online(self):
         data = {
             "cmd":"online",
@@ -158,24 +171,27 @@ class Serial:
             "battery":50,
             "interval":10
         }
-        content = self.dl.send_service('epd', data)
+        content = self.send_service('epd', data)
         print(content)
-        # print('task_id: ' + str(content['task_id']))
-        # print('data_id: ' + content['data_id'])
-        # print('start_time: ' + content['start_time'])
-        # print('end_time: ' + content['end_time'])
-        # self.task_id = content['task_id']
-        # self.data_id = content['data_id']
-        # self.start_time = content['start_time']
-        # self.end_time = content['end_time']
+        if content['status'] == 'ok':
+            if 'task_id' in content.keys():
+                self.task_id = content['task_id']
+                self.data_id = content['data_id']
+                self.start_time = content['start_time']
+                self.end_time = content['end_time']
+                print('task_id: ' + str(content['task_id']))
+                print('data_id: ' + content['data_id'])
+                print('start_time: ' + content['start_time'])
+                print('end_time: ' + content['end_time'])
+            
     
     def task_start(self):
         data = {
             "cmd":"task",
             "task_id":self.task_id,
-            "status": 2
+            "status": 3
         }
-        content = self.dl.send_service('epd', data)
+        content = self.send_service('epd', data)
         print(content)
 
     def task_end(self):
@@ -185,17 +201,21 @@ class Serial:
             fp.writelines([])
         data = {
             "cmd": "task",
-            "task_id": 2,
-            "status": 3
+            "task_id": self.task_id,
+            "status": 4
         }
-        content = self.dl.send_service('epd', data)
+        content = self.send_service('epd', data)
         print(content)
 
 serial = Serial()
-serial.online()
-# time.sleep(20)
+count = 3
+while count:
+    serial.register()
+    serial.online()
+    time.sleep(1)
+    count = count - 1
 # serial.task_start()
-# time.sleep(20)
+# time.sleep(60)
 # serial.task_end()
 # time.sleep(100)
 
