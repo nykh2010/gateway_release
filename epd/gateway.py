@@ -62,13 +62,17 @@ class Gateway(Config):
 
     def save_pending_list(self):
         with open('/tmp/pending', 'w') as fp:
-            fp.writelines(self.pending_list)
+            fp.writelines([device+'\n' for device in self.pending_list])
 
     def add_pending_list(self, device_id):
         self.pending_list.add(device_id)
 
     def get_pending_list(self):
         return self.pending_list
+
+    def get_failed_list(self, success_list):
+        success_list = set(success_list)
+        return list(self.pending_list - success_list)
     
     def check_whitelist_integrity(self, md5):
         hash_obj = hashlib.md5()
