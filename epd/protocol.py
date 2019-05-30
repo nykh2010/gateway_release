@@ -22,7 +22,7 @@ class Handle:
     
     def upload(self, topic, data):
         up = uplink.Upload()
-        url = r'http://127.0.0.1:7788/mqtt/publish/offlinecache'
+        url = r'http://127.0.0.1:7788/mqtt/publish'
         payload = {
             'topic': topic,
             'payload': data
