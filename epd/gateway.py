@@ -1,5 +1,5 @@
 from random import randint
-from time import time, strptime, mktime
+from time import time, strptime, mktime, localtime
 from config import Config
 import uplink
 from downlink import dl
@@ -8,6 +8,9 @@ import hashlib
 from epd_log import epdlog as LOG
 from task import EpdTask
 import os
+import urllib.request
+import json
+
 
 STEP_TIME = 20*60       # 任务间隔时间
 handler_interval = 10   # 10秒产生一次定时任务
@@ -24,6 +27,7 @@ class Gateway(Config):
     def __init__(self):
         super().__init__('gateway')
         # 启动定时任务
+        self.interval_timing()
         self.__whiteListMD5 = self.get_whitelist()
         self.__taskId = self.get_task_id()
         self.__taskStatus = self.get_task_status()
@@ -157,7 +161,22 @@ class Gateway(Config):
                 timer = threading.Timer(60, self.set_task_monitor)
                 timer.start()
         except:
-            pass  
+            pass
+
+    def interval_timing(self):
+        try:
+            host = self.get('server', 'host')
+            resp = urllib.request.urlopen("http://{}/iotgw/api/v1/now".format(host))
+            content = resp.read()
+            serverTime = json.loads(content.decode('utf-8'), encoding='utf-8')
+            tm = localtime(serverTime['data']['unixNano']/1000000000)
+            os.system("date -s \"{:04}-{:02}-{:02} {:02}:{:02}:{:02}\"".format(*tm))
+        except Exception as e:
+            LOG.error(e.__str__())
+        finally:
+            timer = threading.Timer(3600, self.interval_timing)
+            timer.start()
+
 
     def report_task_status(self):
         data = {
