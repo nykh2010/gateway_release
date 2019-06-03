@@ -11,14 +11,16 @@ class RadioHandler(RequestHandler):
         try:
             radio1 = Config("serial1")
             radio_1_param = self.render_string("radio1_param.html", radio=radio1)
-        except:
+        except Exception as e:
+            LOG.error(e.__str__())
             radio_1_param = '''
                 <div style="font-size:large;text-align:center;">射频模块1无效</div>
             '''
         try:
             radio2 = Config("serial2")
             radio_2_param = self.render_string("radio2_param.html", radio=radio2)
-        except:
+        except Exception as e:
+            LOG.error(e.__str__())
             radio_2_param = '''
                 <div style="font-size:large;text-align:center;">射频模块2无效</div>
             '''
