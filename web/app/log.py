@@ -48,7 +48,7 @@ class LogHandler(RequestHandler):
                 records = self.__logmsg.read(path=log.epd)
                 self.render('log.html', records=records)
             else:
-                records = self.__logmsg.read(path=log[name])
+                records = self.__logmsg.read(path=log.__dict__[name])
                 content = self.render_string('log_template.html', records=records)
                 self.write(content)
         except Exception as e:

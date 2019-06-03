@@ -3,6 +3,7 @@ from config import Config
 from auth import auth
 from tornado.log import app_log as LOG
 import re
+import os
 
 
 
@@ -24,7 +25,7 @@ class ServerHandler(RequestHandler):
                 port = self.get_argument('port')
                 if int(port) > 65536:
                     raise Exception("端口号非法")
-                os.system('/usr/local/bin/tools/server.py --host={} --port={}'.format(host, port))
+                os.system('python3 /usr/local/bin/tools/server.py --host={} --port={}'.format(host, port))
                 ret = {'status':'success'}
             except Exception as e:
                 ret['status'] = 'failed'

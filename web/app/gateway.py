@@ -10,7 +10,10 @@ class GatewayHandler(RequestHandler):
         if method == 'restart':
             self.render("restart.html")
         elif method == 'id':
-            gateway = Config("gateway")
+            gateway = {}
+            with open('/etc/gateway/sn', 'r') as fp:
+                sn = fp.read()
+            gateway['sn'] = sn
             self.render("gateway_setup.html", gateway=gateway)
         elif method == 'firmware':
             firmware = Config("firmware")
@@ -31,13 +34,16 @@ class GatewayHandler(RequestHandler):
             if args[0] == 'id':
                 # 修改网关地址
                 try:
-                    gateway = Config("gateway")
+                    # gateway = Config("gateway")
                     gateway_id = self.get_argument('id')
                     with open('/etc/gateway/sn', 'w') as fp:
                         fp.write(gateway_id)
-                    gateway.set_item('sn', gateway_id)
-                    gateway.save()
+                    # gateway.set_item('sn', gateway_id)
+                    # gateway.save()
+                    status = os.system('python3 /usr/local/bin/tools/server.py restart')
                     ret['status'] = 'success'
+                    if status != 0:
+                        raise Exception("参数错误")                          
                 except Exception as e:
                     ret['status'] = 'failed'
                     ret['err_msg'] = e.__str__()

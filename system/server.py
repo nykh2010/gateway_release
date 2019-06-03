@@ -21,31 +21,37 @@ def save_config(host, port):
     server_config.set('server', 'port', port)
     with open('/etc/gateway/system.ini', 'w') as fp:
         server_config.write(fp)
-    with open('/etc/gateway/dma.msghub.ini', 'w') as fp:
+    with open('/etc/gateway/dma.ini', 'w') as fp:
         fp.write("mqttserver={}:{}".format(host, port))
 
 def get_dma_pid():
-    with os.popen("ps | grep -E 'dma.py$' | awk '{print $1}'") as fp:
+    with os.popen("ps | grep -E 'dma.msghub$' | awk '{print $1}'") as fp:
         res = fp.readlines()
         return res[0]
 
 def kill_process(pid):
-    with os.popen("kill -9 {}".format(pid)) as fp:
-        res = fp.readlines()
-        return res[0]
+    ret = os.system("kill -9 {}".format(pid))
+    return ret
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         sys.exit(1)
+    if sys.argv[1] == 'restart':
+        pid = get_dma_pid()
+        ret = kill_process(pid)
+        sys.exit(ret)
     opts, args = getopt.getopt(sys.argv[1:], 'i:', longopts=['host=','port='])
     try:
         params = {}
         for opt, arg in opts:
             params[opt] = arg
-        save_config(host=params['--host'], port=params['--port'])
-        pid = get_dma_pid()
-        kill_process(pid)
+        if 'host' in params.keys():
+            save_config(host=params['--host'], port=params['--port'])
+            pid = get_dma_pid()
+            ret = kill_process(pid)
+        else:
+            raise Exception("params invalid")
     except Exception as e:
         print(e.__str__())        
         sys.exit(1)
-    sys.exit(0)
+    sys.exit(ret)
