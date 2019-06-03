@@ -24,9 +24,9 @@ from configparser import ConfigParser
 
 # define('port',default=8000,type=int)
 # define('host',default='0.0.0.0',type=str)
-# define('log_to_stderr', type=bool, default=False)
-# define('log_file_prefix', type=str, default='/var/logs/web.log')
-# define('log_file_max_size', type=int, default=5 * 1000 * 1000)
+define('log_to_stderr', type=bool, default=False)
+define('log_file_prefix', type=str, default='/var/logs/web.log')
+define('log_file_max_size', type=int, default=5 * 1000 * 1000)
 
 class Config(ConfigParser):
     def __init__(self, path):
@@ -50,6 +50,7 @@ def main():
             (r'/gateway/(.*?)/(.*?)',GatewayHandler),
             (r'/gateway/(.*?)',GatewayHandler),
             (r'/status', StatusHandler),
+            (r'/status/(.*?)', StatusHandler),
             (r'/radio/(.*?)',RadioHandler),
             (r'/setup/(.*?)', SetupHandler),
             (r'/setup', SetupHandler),
@@ -61,7 +62,7 @@ def main():
             (r'/wifi', WifiHandler),
             (r'/radio', RadioHandler)
         ],
-        debug = False,
+        debug = True,
         static_path = os.path.join(os.path.dirname(__file__),"../static"),
         template_path = os.path.join(os.path.dirname(__file__),"../templates"),
         xsrf_cookies=True

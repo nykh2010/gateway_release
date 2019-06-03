@@ -5,17 +5,12 @@
 	<div class="nav">
 		<a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
 		<a href="javascript:void(0)">服务器连接设置&nbsp;</a>
-		<button class="return_a" onclick="change_dir('/setup')">返回</button>
+		<button class="return_a">返回</button>
 	</div>
 	<div class="fix_ie_shadow"></div>
 	<div class="form-border-shadow has-tab">
 		<div class="app-box">
 			<div class="box-bd form-area">
-				<!-- <div class="tab_area" id="wan_mode_layer">
-					<div class="tab-item" id="wan_type1" data-type-index="1" onclick="change_state('1')">宽带PPPoE</div>
-					<div class="tab-item on" id="wan_type2" data-type-index="2">动态IP上网</div>
-					<div class="tab-item" id="wan_type3" data-type-index="3">静态IP上网</div>
-				</div> -->
 				<form id="wan_common_form">
 					<input id="common_clone_mac" name="clone_mac" value="00-0E-C6-D7-FE-88" type="hidden">
 					<input id="common_default_mac" name="default_mac" value="A8-6B-7C-3A-AB-1C" type="hidden">
@@ -39,22 +34,6 @@
 						<label class="form-label" id="">服务器端口</label>
 						<input name="sport" id="sport" size="27" maxlength="17" class="input-text input-big" autocomplete="off" value="{{server.port}}" type="text">
 					</div>
-					<script>
-						// if ({{server.wireless}}) {
-						// 	$("#ethernet_enable").removeClass("radio_off").addClass("radio_on");
-						// 	$("#ethernet_enable_hide").removeClass("section_hide").addClass("section_show");
-						// }
-						// function myradio_toggle(obj) {
-						// 	if ($(obj).hasClass("radio_on")) {
-						// 		$(obj).removeClass("radio_on").addClass("radio_off");
-						// 		$("#ethernet_enable_hide").removeClass("section_show").addClass("section_hide");
-						// 	}
-						// 	else {
-						// 		$(obj).removeClass("radio_off").addClass("radio_on");
-						// 		$("#ethernet_enable_hide").removeClass("section_hide").addClass("section_show");
-						// 	}
-						// }
-					</script>
 					<div class="item opt">
 						<input class="btn submit_btn btn_confirm" onclick="myserver_config();" value="确定" type="submit">
 					</div>

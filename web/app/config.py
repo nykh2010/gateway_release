@@ -6,8 +6,7 @@ from tornado.log import app_log as LOG
 PATH = '/etc/gateway/system.ini'
 
 class Config(ConfigParser):
-    def __init__(self, name):
-        path = PATH
+    def __init__(self, name, path=PATH):
         super().__init__()
         self.read(path)
         self.path = path

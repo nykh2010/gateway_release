@@ -15,25 +15,7 @@
             }
             return i;
         }
-        function refresh_sys_time() {
-            var time = new Date();
-            // 2019-01-21 10:47:56
-            year = time.getFullYear();
-            month = time.getMonth()+1;
-            days = time.getDate();
-            hours = time.getHours();
-            minutes = time.getMinutes();
-            seconds = time.getSeconds();
-            month = checkTime(month);
-            days = checkTime(days);
-            hours = checkTime(hours);
-            minutes = checkTime(minutes);
-            seconds = checkTime(seconds);
-            var strtime = year+"-"+month+"-"+days+"&nbsp"+hours+":"+minutes+":"+seconds;
-            $("#current_time").html(strtime);
-            setInterval("refresh_sys_time()",1000);
-        }
-        refresh_sys_time();
+        
         $(document).ready(function(){
             $("#system_year").val(year);
             $("#system_month").val(month);
@@ -46,7 +28,7 @@
     <div class="nav">
         <a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
         <a href="javascript:void(0)">时间设置&nbsp;</a>
-        <button class="return_a" onclick="change_dir('/setup')">返回</button>
+        <button class="return_a">返回</button>
     </div>
     <div class="fix_ie_shadow"></div>
     <div class="form-border-shadow">
@@ -106,7 +88,7 @@
             <div class="item section_show" id="ntp_div">
 
                 <label class="form-label" id="lbl_timezone">时区</label>
-                <select id="timezone_sel" name="NTP"><option value="12">(GMT-12:00)埃尼威托克,夸贾林岛</option><option value="11">(GMT-11:00)中途岛,萨摩亚群岛</option><option value="10">(GMT-10:00)夏威夷</option><option value="9">(GMT-09:00)阿拉斯加</option><option value="8">(GMT-08:00)太平洋时间(美国和加拿大);蒂华</option><option value="7">(GMT-07:00)山地时间(美国和加拿大);亚利桑那</option><option value="6">(GMT-06:00)中部时间(美国和加拿大);中美洲</option><option value="5">(GMT-05:00)东部时间(美国和加拿大);波哥达</option><option value="4">(GMT-04:00)大西洋时间(加拿大);加拉加斯</option><option value="3">(GMT-03:00)巴西利亚,布宜诺斯艾利斯,乔治敦,格陵兰</option><option value="2">(GMT-02:00)中大西洋</option><option value="1">(GMT-01:00)佛得角群岛,亚速尔群岛</option><option value="0">(GMT)格林威治平时;都柏林,爱丁堡,伦敦,里斯本</option><option value="-1">(GMT+01:00)阿姆斯特丹,柏林,罗马,斯得哥尔摩,巴黎</option><option value="-2">(GMT+02:00)开罗,雅典,伊斯坦布尔,明斯克,耶路撒冷</option><option value="-3">(GMT+03:00)巴格达,科威特,利雅得,莫斯科,圣彼得堡</option><option value="-4">(GMT+04:00)阿布扎比,马斯喀特,巴库,第比利斯,埃里温</option><option value="-5">(GMT+05:00)叶卡捷林堡,伊斯兰堡,卡拉奇,塔什干</option><option value="-6">(GMT+06:00)阿拉木图,新西伯利亚,阿斯塔纳,达卡</option><option value="-7">(GMT+07:00)曼谷,雅加达,河内</option><option value="-8" selected="selected">(GMT+08:00)北京,重庆,乌鲁木齐,香港特别行政区,台北</option><option value="-9">(GMT+09:00)东京,大坂,札幌,汉城,雅库茨克</option><option value="-10">(GMT+10:00)布里斯班,关岛,堪培拉,墨尔本,悉尼</option><option value="-11">(GMT+11:00)马加丹,索罗门群岛,新喀里多尼亚</option><option value="-12">(GMT+12:00)富士,勘察加半岛,马绍尔群岛,惠灵顿</option><option value="-13">(GMT+13:00)努库阿洛法</option></select>
+                <select id="timezone_sel" name="NTP"><option value="12">(GMT-12:00)埃尼威托克,夸贾林岛</option><option value="11">(GMT-11:00)中途岛,萨摩亚群岛</option><option value="10">(GMT-10:00)夏威夷</option><option value="9">(GMT-09:00)阿拉斯加</option><option value="8">(GMT-08:00)太平洋时间(美国和加拿大);蒂华</option><option value="7">(GMT-07:00)山地时间(美国和加拿大);亚利桑那</option><option value="6">(GMT-06:00)中部时间(美国和加拿大);中美洲</option><option value="5">(GMT-05:00)东部时间(美国和加拿大);波哥达</option><option value="4">(GMT-04:00)大西洋时间(加拿大);加拉加斯</option><option value="3">(GMT-03:00)巴西利亚,布宜诺斯艾利斯,乔治敦,格陵兰</option><option value="2">(GMT-02:00)中大西洋</option><option value="1">(GMT-01:00)佛得角群岛,亚速尔群岛</option><option value="0">(GMT)格林威治平时;都柏林,爱丁堡,伦敦,里斯本</option><option value="-1">(GMT+01:00)阿姆斯特丹,柏林,罗马,斯得哥尔摩,巴黎</option><option value="-2">(GMT+02:00)开罗,雅典,伊斯坦布尔,明斯克,耶路撒冷</option><option value="-3">(GMT+03:00)巴格达,科威特,利雅得,莫斯科,圣彼得堡</option><option value="-4">(GMT+04:00)阿布扎比,马斯喀特,巴库,第比利斯,埃里温</option><option value="-5">(GMT+05:00)叶卡捷林堡,伊斯兰堡,卡拉奇,塔什干</option><option value="-6">(GMT+06:00)阿拉木图,新西伯利亚,阿斯塔纳,达卡</option><option value="-7">(GMT+07:00)曼谷,雅加达,河内</option><option value="-8" selected>(GMT+08:00)北京,重庆,乌鲁木齐,香港特别行政区,台北</option><option value="-9">(GMT+09:00)东京,大坂,札幌,汉城,雅库茨克</option><option value="-10">(GMT+10:00)布里斯班,关岛,堪培拉,墨尔本,悉尼</option><option value="-11">(GMT+11:00)马加丹,索罗门群岛,新喀里多尼亚</option><option value="-12">(GMT+12:00)富士,勘察加半岛,马绍尔群岛,惠灵顿</option><option value="-13">(GMT+13:00)努库阿洛法</option></select>
             </div>
             <div class="item opt">
                 <input type="submit" class="btn submit_btn btn_confirm" onclick="system_time_submit()" value="确定">

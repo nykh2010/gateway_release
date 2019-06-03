@@ -16,8 +16,7 @@ class GatewayHandler(RequestHandler):
             firmware = Config("firmware")
             self.render("upgrade.html", firmware=firmware)
         elif method == 'time':
-            firmware = Config("firmware")
-            self.render("settime.html", firmware=firmware)
+            self.render("settime.html")
         elif method == 'restore':
             self.render("restore.html")
         else:
@@ -34,17 +33,14 @@ class GatewayHandler(RequestHandler):
                 try:
                     gateway = Config("gateway")
                     gateway_id = self.get_argument('id')
-                    gateway_mac = self.get_argument('mac')
-                    gateway_key = self.get_argument('key')
-
-                    gateway.set_item('id', gateway_id)
-                    gateway.set_item('mac', gateway_mac)
-                    gateway.set_item('key', gateway_key)  
+                    with open('/etc/gateway/sn', 'w') as fp:
+                        fp.write(gateway_id)
+                    gateway.set_item('sn', gateway_id)
                     gateway.save()
                     ret['status'] = 'success'
                 except Exception as e:
                     ret['status'] = 'failed'
-                    ret['err_msg'] = e.__repr__()
+                    ret['err_msg'] = e.__str__()
             elif args[0] == 'time':
                 # 修改系统时间
                 year = self.get_argument('year')

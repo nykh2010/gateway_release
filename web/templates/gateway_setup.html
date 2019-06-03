@@ -5,14 +5,10 @@
 	<div class="nav">
 		<a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
 		<a href="javascript:void(0)">修改网关地址&nbsp;</a>
-		<button class="return_a" onclick="change_dir('/setup')">返回</button>
+		<button class="return_a">返回</button>
 	</div>
 	<div class="fix_ie_shadow"></div>
 	<div class="form-border-shadow has-tab">
-		<!-- <div id="lan_set_layer" class="tab_area">
-			<div data-type-index="0" id="lan_type1" class="tab-item on">路由器地址</div>
-			<div data-type-index="1" id="lan_type2" class="tab-item">DHCP地址保留</div>
-		</div> -->
 		<div id="warning_count_center" class="grey-text">
 			<p id="lan_setup_tip"></p>
 		</div>
@@ -25,14 +21,6 @@
 							<label class="form-label" id="">网关ID</label>
 							<input type="text" class="input-text input-biger" maxlength="16" size="27" name="gateway_id" id="gateway_id" autocomplete="off" value="{{gateway.sn}}">
 						</div>
-						<div class="item" hidden>
-							<label class="form-label" id="">网关MAC</label>
-							<input type="text" class="input-text input-biger" maxlength="16" size="27" name="gateway_mac" id="gateway_mac" autocomplete="off" value="">
-						</div>
-						<div class="item" hidden>
-							<label class="form-label" id="">鉴权码</label>
-							<input type="text" class="input-text input-biger" maxlength="16" size="27" name="gateway_key" id="gateway_key" autocomplete="off" value="">
-						</div>
 						<div class="item opt">
 							<input type="submit" class="btn submit_btn btn_confirm" onclick="mygateway_setup_submit()" value="确定">
 						</div>
@@ -41,8 +29,6 @@
 						function mygateway_setup_submit() {
 							var obj = {};
 							obj.id = $("#gateway_id").val();
-							obj.mac = $("#gateway_mac").val();
-							obj.key = $("#gateway_key").val();
 							obj._xsrf = $("#lan_setup_frm").children("input[name='_xsrf']").val();
 							$.post("/gateway/update/id", obj, function(data){
 								if (data.status == "success") {
