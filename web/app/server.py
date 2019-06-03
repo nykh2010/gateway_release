@@ -2,30 +2,32 @@ from tornado.web import RequestHandler
 from config import Config
 from auth import auth
 from tornado.log import app_log as LOG
+import re
 
 
 
 class ServerHandler(RequestHandler):
-    server = Config("server")
-    gateway = Config("gateway")
-    
     @auth
     def get(self):
         # print(dir(wifi))       
-        self.render("server_setup.html", server=self.server, gateway=self.gateway)
+        server = Config("server")
+        self.render("server_setup.html", server=server)
 
     def post(self, method):
         if method == "update":
             ret = {}
             try:
-                self.server.set_item('host', self.get_argument('host'))
-                self.server.set_item('port', self.get_argument('port'))
-                
-                ret['status'] = 'success'
-                self.server.save()
-                self.gateway.save()
+                host = self.get_argument('host')
+                flag = re.match(r'((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)', host)
+                if flag is None:
+                    raise Exception("ip地址非法")
+                port = self.get_argument('port')
+                if int(port) > 65536:
+                    raise Exception("端口号非法")
+                os.system('/usr/local/bin/tools/server.py --host={} --port={}'.format(host, port))
+                ret = {'status':'success'}
             except Exception as e:
                 ret['status'] = 'failed'
-                ret['err_msg'] = e.__repr__()
+                ret['err_msg'] = e.__str__()
                 LOG.error(e.__str__())
             self.write(ret)

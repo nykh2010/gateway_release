@@ -42,11 +42,14 @@ class LogHandler(RequestHandler):
     __logmsg = LogMsg("system")
     @auth
     def get(self, name=None):
-        log = Config("log")
-        if name is None:
-            records = self.__logmsg.read(path=os.path.join(log.path, "epd.log"))
-            self.render('log.html', records=records)
-        else:
-            records = self.__logmsg.read(path=os.path.join(log.path, "%s.log" % name))
-            content = self.render_string('log_template.html', records=records)
-            self.write(content)
+        try:
+            log = Config("log")
+            if name is None:
+                records = self.__logmsg.read(path=log.epd)
+                self.render('log.html', records=records)
+            else:
+                records = self.__logmsg.read(path=log[name])
+                content = self.render_string('log_template.html', records=records)
+                self.write(content)
+        except Exception as e:
+            self.write(e.__str__())
