@@ -49,17 +49,27 @@
             <div class="router_info_content">
                 <div class="left_info_content">
                     <ul class="left_info_ul">
-                        <li id="router_name_info">频点：434MHz</li>
-                        <li id="router_model">调制方式：FSK</li>
-                        <li id="router_logo">带宽：250kHz</li>
-                        <li id="router_hz">传输速率：153kbps</li>
+                        <li id="router_name_info">频点：{{radio.lfrequency}}MHz</li>
+                        <li id="router_model">调制方式：{{radio.lmod}}</li>
+                        <li id="router_logo">带宽：{{radio.lbw}}kHz</li>
+                        <li id="router_hz">传输速率：{{radio.lbaudrate}}bps</li>
                     </ul>
                 </div>
                 <ul class="right_info_ul">
-                    <li id="router_bone">唤醒周期：60(分钟)</li>
-                    <li id="router_wifi_speed">重复次数：3(次)</li>
-                    <li id="router_save_in">延时等待时间：300秒</li>
-                    <li id="router_save_onoff">收发模式：自动</li>
+                    <li id="router_bone">唤醒周期：{{radio.wakeup}}(分钟)</li>
+                    <li id="router_wifi_speed">重复次数：{{radio.trycount}}(次)</li>
+                    <li id="router_save_in">延时等待时间：{{radio.wait}}秒</li>
+                    <li id="router_save_onoff">收发模式：
+                        {% if radio.transmode == 0 %}
+                        只发
+                        {% elif radio.transmode == 1 %}
+                        只收
+                        {% elif radio.transmode == 2 %}
+                        自动
+                        {% else %}
+                        自动
+                        {% end %}
+                    </li>
                 </ul>
             </div>
         </div>

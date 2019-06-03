@@ -18,8 +18,8 @@ class StatusHandler(RequestHandler):
         return eth0, wifi
     
     def get_radio_status(self):
-        radio_config = Config('serial1')
-        
+        radio = Config('serial1')
+        return radio        
 
     def get_system_status(self):
         pass
@@ -34,7 +34,8 @@ class StatusHandler(RequestHandler):
             wan['interface'] = 'eth0'
             lan = dict(inet_addr=wifi)
             lan['interface'] = 'wlan0'
-            self.render("info.html", task=task.__dict__, wan=wan, lan=lan)
+            radio = self.get_radio_status()
+            self.render("info.html", task=task.__dict__, wan=wan, lan=lan, radio=radio)
         else:
             ret = {}
             ret['task'] = self.get_task_status()
