@@ -8,19 +8,19 @@ class RadioHandler(RequestHandler):
     '''射频参数配置'''
     @auth
     def get(self):
-        radio1 = Config("radio1")
-        radio2 = Config("radio2")
-        if radio1.enable:
+        try:
+            radio1 = Config("serial1")
             radio_1_param = self.render_string("radio1_param.html", radio=radio1)
-        else:
+        except:
             radio_1_param = '''
-                <p>射频模块1无效</p>
+                <div style="font-size:large;text-align:center;">射频模块1无效</div>
             '''
-        if radio2.enable:
+        try:
+            radio2 = Config("serial2")
             radio_2_param = self.render_string("radio2_param.html", radio=radio2)
-        else:
+        except:
             radio_2_param = '''
-                <p>射频模块2无效</p>
+                <div style="font-size:large;text-align:center;">射频模块2无效</div>
             '''
         self.render("radiosetup.html", radio_1=radio_1_param, radio_2=radio_2_param)
 
@@ -31,7 +31,7 @@ class RadioHandler(RequestHandler):
                 radio_number = self.get_argument("radio_number")
                 if (radio_number == '1'):
                     # print("radio1")
-                    radio = Config("radio1")
+                    radio = Config("serial1")
                     wakeup = self.get_argument("wakeup")
                     trycount = self.get_argument("trycount")
                     wait = self.get_argument("wait")
@@ -49,7 +49,7 @@ class RadioHandler(RequestHandler):
                     if resp['status'] != "ok":
                         raise Exception(resp['msg'])
                 else:
-                    radio = Config("radio2")
+                    radio = Config("serial2")
                     data = {
                         "cmd":"update",
                         "radio_number":"2"

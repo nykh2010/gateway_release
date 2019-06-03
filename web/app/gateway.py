@@ -84,7 +84,7 @@ class GatewayHandler(RequestHandler):
                 ret['err_msg'] = 'format error'  
                 os.system('rm %s' % firmware_path)
         elif method == 'restore':
-            os.system('cp /var/default/*.ini /etc/config')
+            os.system('cp /media/default/system.ini /etc/gateway')
             os.system('reboot &')
             ret['status'] = 'success' 
                 

@@ -18,7 +18,8 @@ class StatusHandler(RequestHandler):
         return eth0, wifi
     
     def get_radio_status(self):
-        pass
+        radio_config = Config('serial1')
+        
 
     def get_system_status(self):
         pass
