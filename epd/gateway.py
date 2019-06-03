@@ -38,11 +38,11 @@ class Gateway(Config):
 
     def get_whitelist(self):
         try:
-            with open(self.white_list_url, 'r') as whitelistfile:
+            with open(self.white_list_url, 'rb') as whitelistfile:
                 content = whitelistfile.read()
-                self.__whitelist = set(content.split('\n'))
+                self.__whitelist = set(content.decode('utf-8').split('\n'))
                 hash_obj = hashlib.md5()
-                hash_obj.update(content.encode('utf-8'))
+                hash_obj.update(content)
                 return str(hash_obj.hexdigest())
         except Exception as e:
             LOG.error("get white list failed: %s" % e.__str__())
