@@ -40,6 +40,16 @@ if __name__ == "__main__":
         pid = get_dma_pid()
         ret = kill_process(pid)
         sys.exit(ret)
+    if sys.argv[1] == 'init':
+        server_config = ConfigParser()
+        server_config.read('/etc/gateway/system.ini')
+        host = server_config.get('server', 'host')
+        port = server_config.get('server', 'port')
+        with open('/etc/gateway/dma.ini', 'w') as fp:
+            fp.write("mqttserver={}:{}".format(host, port))
+        pid = get_dma_pid()
+        ret = kill_process(pid)
+        sys.exit(ret)
     opts, args = getopt.getopt(sys.argv[1:], 'i:', longopts=['host=','port='])
     try:
         params = {}

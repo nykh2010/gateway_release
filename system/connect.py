@@ -305,11 +305,3 @@ if __name__ == "__main__":
         device.handle(params)        
     except Exception as e:
         print(e.__str__())
-        
-            
-    # try:
-    #     downlink = Downlink()
-    #     downlink.start_service()
-    #     downlink.stop_service()
-    # except Exception as e:
-    #     print(e.__repr__())
