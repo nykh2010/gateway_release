@@ -128,7 +128,7 @@ class OnlineRequest(Handle):
                                 "cmd":"task",
                                 "method":"create",
                                 "task_id":send_data['task_id'],
-                                "data_id":send_data['data_id'],
+                                "data_id":int(send_data['data_id']),
                                 "start_time":send_data['start_time'],
                                 "end_time":send_data['end_time']
                             }
