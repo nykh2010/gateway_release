@@ -69,16 +69,16 @@
                 <input type="hidden" id="common_uiname" name="uiname" value="WAN1">
                 <div class="left_info_content">
                     <ul class="left_info_ul">
-                        <li><span id="wanIp">外网IP地址：</span><span id="routerInfo_wanIp">未连接外网</span></li>
-                        <li><span id="wanDns_a">连接方式：</span><span id="routerInfo_dns_a">eth0</span></li>
+                        <li><span id="wanIp">外网IP地址：</span><span id="routerInfo_wanIp">{{wan['inet_addr']}}</span></li>
+                        <li><span id="wanDns_a">连接方式：</span><span id="routerInfo_dns_a">{{wan['interface']}}</span></li>
                         <!--<li><span  id="wanMask"></span><span id="routerInfo_wanMask"></span></li>-->
                         <!--<li><span  id="wanGm"></span><span id="routerInfo_wanGm"></span></li>-->
                         <!-- <li><span id="wanMac">MAC地址：</span><span id="routerInfo_wanMac">A8-6B-7C-3A-AB-1C</span></li> -->
                     </ul>
                 </div>
                 <ul class="right_info_ul">
-                    <li><span id="wanIp">本地IP地址：</span><span id="routerInfo_wanIp">192.168.1.1</span></li>
-                    <li><span id="wanDns_b">连接方式：</span><span id="routerInfo_dns_b">wlan0</span></li>
+                    <li><span id="wanIp">本地IP地址：</span><span id="routerInfo_wanIp">{{lan['inet_addr']}}</span></li>
+                    <li><span id="wanDns_b">连接方式：</span><span id="routerInfo_dns_b">{{lan['interface']}}</span></li>
 
                 </ul>
             </div>
@@ -88,7 +88,19 @@
         </div>
         <div class="item_wrap">
             <div class="info" id="task_info">任务信息</div>
-            
+            <div class="router_info_content">
+                <div class="left_info_content">
+                    <ul class="left_info_ul">
+                        <li>任务id：{{task['task_id']}}</li>
+                        <li>数据id：{{task['image_data_id']}}</li>
+                        <li>任务状态：{{task['task_status']}}</li>
+                    </ul>
+                </div>
+                <ul class="right_info_ul">
+                    <li>开始时间：{{task['start_time']}}</li>
+                    <li>结束时间：{{task['end_time']}}</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
