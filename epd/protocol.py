@@ -149,7 +149,7 @@ class OnlineRequest(Handle):
                     if ret:
                         start_time, end_time = gw.get_task_time()
                         send_data['task_id'] = gw.get_task_id()
-                        send_data['data_id'] = gw.get_data_id()
+                        send_data['data_id'] = int(gw.get_data_id())
                         send_data['start_time'] = start_time
                         send_data['end_time'] = end_time
                         gw.add_pending_list(device_id)
