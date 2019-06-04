@@ -225,8 +225,8 @@ class Gateway(Config):
 
     def get_gw_id(self):
         with open('/etc/gateway/sn', 'r') as fp:
-            sn = fp.read()
-        return sn
+            sn = fp.readline()
+        return sn.rstrip('\n')
 
     def get_task_id(self):
         epd_task = EpdTask(self.task_url)
