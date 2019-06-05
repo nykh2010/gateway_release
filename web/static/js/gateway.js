@@ -23,5 +23,17 @@ $(function(){
         $("#current_time").html(strtime);
         delete time;
     }
+
+    $("#backup").click(function(){
+        data = {};
+        $.post('/gateway/backup', data, function(data){
+            if (data.status == 'success') {
+                show_message('success');
+            }
+            else {
+                show_message('error', data.err_msg);
+            }
+        });
+    });
 });
 

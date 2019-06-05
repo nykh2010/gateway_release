@@ -16,8 +16,7 @@ class GatewayHandler(RequestHandler):
             gateway['sn'] = sn
             self.render("gateway_setup.html", gateway=gateway)
         elif method == 'firmware':
-            firmware = Config("firmware")
-            self.render("upgrade.html", firmware=firmware)
+            self.render("upgrade.html")
         elif method == 'time':
             self.render("settime.html")
         elif method == 'restore':
@@ -40,7 +39,7 @@ class GatewayHandler(RequestHandler):
                         fp.write(gateway_id)
                     # gateway.set_item('sn', gateway_id)
                     # gateway.save()
-                    status = os.system('python3 /usr/local/bin/tools/server.py restart')
+                    status = os.system('/home/root/kill_process msghub')
                     ret['status'] = 'success'
                     if status != 0:
                         raise Exception("参数错误")                          
@@ -73,19 +72,46 @@ class GatewayHandler(RequestHandler):
                 ret['err_msg'] = 'file check failed'
                 self.write(ret)
                 return
+            
             if "zip" in file_name or "tar.gz" in file_name:
-                service_conf = Config("service")
-                firmware_path = os.path.join(service_conf.path, file_name)
-                with open(firmware_path, 'wb') as f:
-                    f.write(content)
-                ret['status'] = 'success'
-            else:
-                ret['status'] = 'failed'
-                ret['err_msg'] = 'format error'  
-                os.system('rm %s' % firmware_path)
+                with open('/media/%s' % file_name, 'wb') as fp:
+                    fp.write(content)
+                status = self.install(file_name)
+                if status != 0:
+                    ret['status'] = 'failed'
+                    ret['err_msg'] = 'install failed'
+                else:
+                    ret['status'] = 'success'
         elif method == 'restore':
-            os.system('cp /media/default/system.ini /etc/gateway')
-            os.system('reboot &')
+            if not (os.path.exists('/media/bin') and os.path.exists('/media/gateway')):
+                ret['status'] = 'failed'                    # 未找到备份文件
+                ret['err_msg'] = 'can not found backup file'
+                self.write(ret)
+                return
+            apps = os.listdir('/usr/local/bin')
+            for app in apps:
+                # 杀死所有app
+                os.system('/home/root/kill_process %s' % app)
+                os.system("rm /usr/local/bin/%s -rf" % app)
+            os.system("rm /etc/gateway -rf")
+            os.system("cp /media/bin /usr/local -rf")       # 恢复应用程序
+            os.system("cp /media/gateway /etc -rf")         # 恢复配置文件
+            os.system("reboot &")                           # 重启
             ret['status'] = 'success' 
-                
+        elif method == 'backup':
+            os.system('cp /usr/local/bin /media -rf')
+            os.system('cp /etc/gateway /media -rf')
+            ret['status'] = 'success'
         self.write(ret)
+
+    def install(self, file_name):
+        os.system("tar -xvf /media/%s -C /media/install" % file_name)
+        if not os.access('/media/install/INSTALL', os.X_OK):
+            os.chmod('/media/install/INSTALL', os.X_OK)
+        ret = os.system("/media/install/INSTALL")
+        os.system("rm /media/%s /media/install -rf" % file_name)
+        return ret
+            
+
+                
+        
