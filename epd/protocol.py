@@ -22,7 +22,7 @@ class Handle:
     
     def upload(self, topic, data):
         up = uplink.Upload()
-        url = r'http://127.0.0.1:7788/mqtt/publish/offlinecache'
+        url = r'http://127.0.0.1:7788/mqtt/publish'
         payload = {
             'topic': topic,
             'payload': data
@@ -65,39 +65,48 @@ class OnlineRequest(Handle):
     def func(self, request):
         try:
             send_data = dict()
+            upload_data = None
             device_id = request['device_id']
             firmware = request.get('firmware', None)
-            data_id = request.get('data_id', None)
+            data_id = request.get('data_id', "0")
             interval = request.get('interval', None)
             if firmware:
                 # 注册上报
                 LOG.info("%s register", device_id)
                 upload_data = {
-                    "nid": device_id,
-                    "d": {
-                        "firmware": firmware
-                    }
+                    "d": [{
+                        "nid": device_id,
+                        "d":{
+                            "firmware": firmware
+                        }
+                    }]
                 }
+                topic = 'dma/report/periph/reg'
             elif data_id:
                 # 心跳上报
                 # 准备上报数据
                 upload_data = {
-                    "nid": device_id,
-                    "d": {
-                        "image_data_id": data_id,
-                        "interval": request['interval'],
-                        "battery": request['battery']
-                    }
+                    "d": [{
+                        "nid": device_id,
+                        "d":{
+                            "image_data_id": int(data_id),
+                            "interval": request['interval'],
+                            "battery": request['battery']
+                        }
+                    }]
                 }
+                topic = 'dma/report/periph'
                 ts = gw.get_task_status()
+                LOG.info("task status: %s", ts)
                 if ts in ('0','4','5'): # 没有任务或任务已结束
                     data = {
                         'nid': device_id,
-                        'image_data_id': data_id,
+                        # 'image_data_id': int(data_id),
+                        'image_data_id': int(gw.get_data_id()),
                         'sn': gw.get_gw_id()
                     }
                     LOG.info("start query")
-                    resp = self.query_task('http://10.10.36.5:8000/v1/tasks/gwtasks/assign', data)
+                    resp = self.query_task('http://10.252.97.88/iotgw/api/v1/tasks/gwtasks/assign', data)
                     LOG.info("get response")
                     if resp:
                         # 应答成功，保存任务状态，下发时间，下载任务
@@ -113,6 +122,23 @@ class OnlineRequest(Handle):
                             send_data['data_id'] = gw.get_data_id()
                             send_data['start_time'] = start_time
                             send_data['end_time'] = end_time
+
+                            # 向serial发送任务开始命令
+                            task_start = {
+                                "cmd":"task",
+                                "method":"create",
+                                "task_id":send_data['task_id'],
+                                "data_id":int(send_data['data_id']),
+                                "start_time":send_data['start_time'],
+                                "end_time":send_data['end_time']
+                            }
+                            ret = dl.send_service('serial', task_start, need_resp=True)
+                            if ret['status'] != 'ok':
+                                gw.set_try_data('serial', task_start)
+
+                            # 添加待执行表
+                            gw.create_pending_list()
+                            gw.add_pending_list(device_id)
                         else:
                             # 创建失败上报
                             pass
@@ -123,9 +149,10 @@ class OnlineRequest(Handle):
                     if ret:
                         start_time, end_time = gw.get_task_time()
                         send_data['task_id'] = gw.get_task_id()
-                        send_data['data_id'] = gw.get_data_id()
+                        send_data['data_id'] = int(gw.get_data_id())
                         send_data['start_time'] = start_time
                         send_data['end_time'] = end_time
+                        gw.add_pending_list(device_id)
                 else:
                     # 其他情况处理
                     pass
@@ -140,12 +167,14 @@ class OnlineRequest(Handle):
             send_data['status'] = 'error'
             LOG.error(e.__repr__())
         finally:
-            self.upload(upload_data)
+            if upload_data:
+                self.upload(topic, upload_data)
             return send_data
     
-    def upload(self, data):
+    def upload(self, topic, data):
         # 上传信息
-        super().upload('dma/report/periph', data)
+        super().upload(topic, data)
+        # super().upload('dma/report/periph', data)
 
 class TaskRequest(Handle):
     def func(self, data):
@@ -157,17 +186,22 @@ class TaskRequest(Handle):
             if not ret:
                 raise Exception('task %d not exist' % task_id)
             upload_data = {}
-            if status == 3:
+            if status == 4:
                 with open("/tmp/success") as successfile:
                     content = successfile.read()
                     success_list = content.split('\n')
-                with open("/tmp/fail") as failfile:
-                    content = failfile.read()
-                    fail_list = content.split('\n')
+                # with open("/tmp/fail") as failfile:
+                #     content = failfile.read()
+                #     fail_list = content.split('\n')
                 os.unlink('/tmp/success')       # 删除文件
-                os.unlink('/tmp/fail')
+                # os.unlink('/tmp/fail')
                 upload_data['success_list'] = success_list
-                upload_data['failed_list'] = fail_list                
+                upload_data['failed_list'] = gw.get_failed_list(success_list)
+            elif status == 3:
+                # 保存待执行列表到文件
+                gw.save_pending_list()
+            else:
+                pass            
             # 上传执行状态
             upload_data['task_id'] = task_id
             upload_data['status'] = status
