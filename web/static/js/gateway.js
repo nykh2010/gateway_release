@@ -25,8 +25,10 @@ $(function(){
     }
 
     $("#backup").click(function(){
-        data = {};
-        $.post('/gateway/backup', data, function(data){
+        var xsrf = $("#restore_default_form").children("input[name='_xsrf']").val();
+        var obj = {};
+        obj._xsrf = xsrf;
+        $.post('/gateway/backup', obj, function(data){
             if (data.status == 'success') {
                 show_message('success');
             }

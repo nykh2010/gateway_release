@@ -88,16 +88,9 @@ class GatewayHandler(RequestHandler):
                 ret['err_msg'] = 'can not found backup file'
                 self.write(ret)
                 return
-            apps = os.listdir('/usr/local/bin')
-            for app in apps:
-                # 杀死所有app
-                os.system('/home/root/kill_process %s' % app)
-                os.system("rm /usr/local/bin/%s -rf" % app)
-            os.system("rm /etc/gateway -rf")
-            os.system("cp /media/bin /usr/local -rf")       # 恢复应用程序
-            os.system("cp /media/gateway /etc -rf")         # 恢复配置文件
-            os.system("reboot &")                           # 重启
-            ret['status'] = 'success' 
+            else:
+                os.system("/home/root/restore &")
+                ret['success']
         elif method == 'backup':
             os.system('cp /usr/local/bin /media -rf')
             os.system('cp /etc/gateway /media -rf')
