@@ -1,0 +1,45 @@
+{% extends "mainboard.html" %}
+
+
+{% block container_wrap %}
+<div id="container_wrap">
+    <div class="nav">
+        <a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
+        <a href="javascript:void(0)">修改管理密码&nbsp;</a>
+        <button class="return_a">返回</button>
+    </div>
+    <div class="fix_ie_shadow"></div>
+    <div class="form-border-shadow">
+        <div id="warning_count_center" class="grey-text">
+            <p id="password_tip">修改网关管理密码，管理密码非常重要，修改完成后请把管理密码记在小本子上以防遗忘。</p>
+            <p id="password_wireless_differ">温馨提示：管理密码和WiFi密码可以分别设置，修改管理密码不会影响到WiFi的连接密码。</p>
+        </div>
+        <div id="password_layer" class="app-box section_show">
+            <form id="user_pwd_frm" class="form-area" action="javascript:void(0);">
+                {% raw xsrf_form_html() %}
+                <div class="item">
+                    <label class="form-label" id="lbl_old_password" for="">原密码</label>
+                    <input type="text" class="sr-only" value="">
+    				<input type="password" class="sr-only">
+                    <input type="password" maxlength="63" class="input-text" id="igd_webs_old_password" name="old_password" data-aes="true" autocomplete="off">
+                </div>
+                <div class="item parentPos">
+                    <label class="form-label" id="lbl_password1" for="">新密码</label>
+                    <input type="password" maxlength="63" class="input-text" id="igd_webs_password1" name="pwd1" onfocus="ck_pwd(this.id,this.value);" onkeyup="ck_pwd(this.id,this.value);" onblur="remove_ck_pwd(this.id);" data-aes="true" autocomplete="off">
+    			</div>
+                <div class="item">
+                    <label class="form-label" id="lbl_password2" for="">确认密码</label>
+                    <input type="password" maxlength="63" class="input-text" id="igd_webs_password2" name="pwd2" data-aes="true" autocomplete="off">
+                </div>
+                <div class="item opt">
+                    <input type="hidden" name="action" value="1">
+                    <input type="hidden" name="id" value="0">
+                    <input type="hidden" name="type" value="1">
+                    <input type="hidden" id="igd_webs_user" name="user" value="admin">
+                    <input type="submit" class="btn submit_btn btn_confirm" onclick="user_password_set()" value="确定">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% end %}

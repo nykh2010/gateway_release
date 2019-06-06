@@ -1,0 +1,117 @@
+{% extends "mainboard.html" %}
+{% block container_wrap %}
+<div id="container_wrap">
+    <div class="nav">
+        <a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
+        <a href="javascript:void(0)">重启网关&nbsp;</a>
+        <button class="return_a">返回</button>
+    </div>
+    <div class="fix_ie_shadow"></div>
+    <div class="form-border-shadow has-tab">
+    	<!-- <div id="reboot_mode_layer" class="tab_area">
+    		<div data-type-index="0" id="div_reboot_now_title" class="tab-item on">立即重启</div>
+    		<div data-type-index="1" id="div_reboot_timed_title" class="tab-item">定时重启</div>
+    	</div> -->
+        <div class="app-box" id="reboot_now_div" style="padding-top:20px;">
+            <div class="box-bd">
+                <form id="soft_reboot_form" class="form-area" method="post" action="javascript:void(0);">
+                    <div class="item opt">
+                        <div id="div_reboot_now_tip" class="center_tip">网关将立即重新启动</div>
+                    </div>
+                    <div class="item opt">
+                        <input class="btn submit_btn btn_reboot" onclick="soft_reboot();" value="立即重启" type="submit"> <!-- 重新启动 -->
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="app-box section_hide" id="reboot_timed_div" style="padding-top:20px;">
+            <div class="box-bd"></div>
+            <form id="timed_reboot_form" class="form-area" method="post" action="javascript:void(0);">
+                {% raw xsrf_form_html() %}
+                <div class="item opt">
+                    <div id="div_reboot_timed_tip" class="center_tip">路由器系统将在设定时间点重新启动</div>
+                </div>
+                <div class="item">
+                    <label class="form-label" id="lbl_reboot_status" for="reboot_on">定时重启状态</label>
+                    <!--<input type="radio" class="input-radio" id="reboot_on" onClick="reboot_state_change(this.value);"
+                           value="1" name="reboot_state">
+                    <label id="lbl_reboot_on" for="reboot_on"></label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" class="input-radio" id="reboot_off" onClick="reboot_state_change(this.value);"
+                           value="0" name="reboot_state">
+                    <label id="lbl_reboot_off" for="reboot_off"></label>-->
+    				<div class="radio_form radio_on" id="reboot_enable" onclick="radio_toggle(this,'reboot_state_change');"></div>
+                    <input id="reboot_enable_hidden" name="enable" type="hidden">
+                </div>
+                <div id="reboot_timed_layer">
+                    <div class="item off">
+                        <label class="form-label" id="lbl_reboot_mode" for="reboot_mode">定时重启方式</label>
+                        <select id="reboot_mode" name="type" onchange="reboot_mode_set(this.value);" style="width:155px;"><option value="0" selected="selected">每天</option><option value="1">每周</option><option value="2">一次</option></select>
+                    </div>
+                    <div id="reboot_week" class="item_line section_hide">
+                        <label class="form-label"></label>
+        				<span>
+        					<input class="input-chx" value="1" id="week_day0" type="checkbox">
+        					<label id="lbl_week_day0" for="week_day0">星期一</label>
+        					<input class="input-chx" value="2" id="week_day1" type="checkbox">
+        					<label id="lbl_week_day1" for="week_day1">星期二</label>
+        					<input class="input-chx" value="3" id="week_day2" type="checkbox">
+        					<label id="lbl_week_day2" for="week_day2">星期三</label>
+        					<input class="input-chx" value="4" id="week_day3" type="checkbox">
+        					<label id="lbl_week_day3" for="week_day3">星期四</label>
+        					<input class="input-chx" value="5" id="week_day4" type="checkbox">
+        					<label id="lbl_week_day4" for="week_day4">星期五</label>
+        					<input class="input-chx" value="6" id="week_day5" type="checkbox">
+        					<label id="lbl_week_day5" for="week_day5">星期六</label>
+        					<input class="input-chx" value="7" id="week_day6" type="checkbox">
+        					<label id="lbl_week_day6" for="week_day6">星期日</label>
+        				</span>
+                    </div>
+                    <div id="reboot_time" class="item_line section_hide">
+                        <label class="form-label"></label>
+        				<span>
+        					<input name="r_time" value="1" id="time_day0" type="radio">
+        					<label id="lbl_time_day0" for="time_day0"></label>
+        					<input name="r_time" value="2" id="time_day1" type="radio">
+        					<label id="lbl_time_day1" for="time_day1"></label>
+        					<input name="r_time" value="3" id="time_day2" type="radio">
+        					<label id="lbl_time_day2" for="time_day2"></label>
+        					<input name="r_time" value="4" id="time_day3" type="radio">
+        					<label id="lbl_time_day3" for="time_day3"></label>
+        					<input name="r_time" value="5" id="time_day4" type="radio">
+        					<label id="lbl_time_day4" for="time_daye4"></label>
+        					<input name="r_time" value="6" id="time_day5" type="radio">
+        					<label id="lbl_time_day5" for="time_day5"></label>
+        					<input name="r_time" value="7" id="time_day6" type="radio">
+        					<label id="lbl_time_day6" for="time_day6"></label>
+        				</span>
+                    </div>
+                    <input id="timer_day" name="timer_day" value="" type="hidden">
+
+                    <div id="reboot_min_sec" class="item_line">
+                        <label id="lbl_reboot_time" class="form-label">路由器重启时间</label>
+        				<span>
+        					<input maxlength="2" size="5" id="hour" name="hour" value="0" class="input-text input-small" type="text">
+        					<span id="span_hour" class="word_sep">时</span>
+        					<input maxlength="2" size="5" id="minute" name="minute" value="0" class="input-text input-small" type="text">
+        					<span id="span_minute" class="word_sep">分</span>
+        				</span>
+                    </div>
+                </div>
+                <div class="item opt">
+                    <input class="btn submit_btn btn_confirm" onclick="set_miscreboot()" value="确定" type="submit">
+                </div>
+            </form>
+        </div>
+
+        <div id="reset_div" class="section_hide">
+            <center>
+                <div class="reset_tip">
+                    <span id="span_reset_tip">路由器正在重启，请勿断电，请稍候……&nbsp;</span>
+                    <span id="time"></span>
+                </div>
+            </center>
+        </div>
+    </div>
+{% end %}

@@ -1,0 +1,169 @@
+{% extends "mainboard.html" %}
+
+{% block container_wrap %}
+<div id="container_wrap">
+    <div class="nav">
+        <a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
+        <a href="javascript:void(0)">系统升级&nbsp;</a>
+        <button class="return_a">返回</button>
+    </div>
+    <style>
+        .fix_ie_shadow {
+            bottom: 3% \9;
+            *bottom: -0.5%;
+        }
+    </style>
+    <script type="text/javascript" src="/static/js/sha256.jquery.debug.js">
+    </script>
+    <script>
+        function myanswer() {
+                var file_obj = document.getElementById("put_file").files[0];
+                console.log("%o\n", file_obj);
+                var reader = new FileReader();
+                reader.readAsBinaryString(file_obj);
+                reader.onload = function(evt) {
+                    var file_array = evt.target.result;
+                    var result = $.sha256(file_array);
+                    console.log("%o\n", result);
+                    $("#sha256").val(result);
+                };
+            }
+    </script>
+    <div class="fix_ie_shadow"></div>
+    <div class="form-border-shadow has-tab">
+        <div class="box-bd form-area">
+            <div class="tab_area" id="update_mode_layer">
+                <!-- <div class="tab-item on" id="div_manual_update_title" data-type-index="0">手动升级</div>
+                <div class="tab-item" id="div_auto_update_title" data-type-index="1">在线升级</div> -->
+            </div>
+            <div class="app-box section_show" id="manual_update_div">
+                <div class="box-bd">
+                    <form id="update_form" class="form-area" action="javascript:void(0);">
+                    <!-- <form id="update_form" method="post" class="form-area" target="iframe_hidden" action="javascript:void(0);" enctype="multipart/form-data"> -->
+                        {% raw xsrf_form_html() %}
+                        <input type="text" id="sha256" name="sha256" hidden>
+                        <div class="rally_center_tip center_tip">
+                            <span id="div_manual_update_tip">升级软件需要花费几分钟的时间，请不要关闭电源或按重置按钮!</span>
+                        </div>
+                        <div class="item" style="position:relative;">
+                            <!--<label for="put_file" class="form-label" id="lbl_put_file"></label>-->
+                            <a href="javascript:void(0);" class="white_btn" style="text-decoration:none; overflow:hidden;">
+                                <span id="span_view">选择升级文件</span>
+                                <input type="file" name="put_file" id="put_file" class="filePrew" size="3" onchange="set_file_name(this)">
+                            </a>
+                            <input type="text" id="focus_help" class="focus_help">
+                        </div>
+                        <div id="update_file_name" class="item file_name_layer"></div>
+                        <div class="item opt" style="padding-top:10px;">
+                            <input type="submit" class="btn submit_btn btn_confirm" onclick="myanswer();answer();" value="确定">
+                        </div>
+                        <script>
+                            var xsrf = document.getElementsByName("_xsrf")[0];
+                            // var obj = xsrf.value();
+                            console.log("%o", xsrf.value);
+                        </script>
+                    </form>
+                </div>
+            </div>
+
+            <div id="auto_update_div" class="app-box section_hide">
+                <div class="box-bd">
+                    <form id="auto_update_info_frm" class="form-area" method="post" action="javascript:void(0);">
+                        <div class="item">
+                            <label class="form-label" id="lbl_auto_update">自动升级</label>
+
+                            <label id="auto_update_checkbox_label" for="auto_update_checkbox">开启</label>
+                            <input type="checkbox" value="0" onclick="auto_update_checkbox_change(this);" id="auto_update_checkbox" name="auto_update_checkbox">
+                        </div>
+                        <div class="item">
+                            <label id="lbl_version_info" class="form-label">版本信息</label>
+                            <span id="span_cur_version">当前版本</span>
+                            <span id="cur_version" class="padding-left-10"></span>
+                        </div>
+                        <div id="new_version_layer" class="item section_hide">
+                            <label class="form-label"></label>
+                            <span id="span_new_version">最新版本</span>
+                            <span id="new_version" class="padding-left-10"></span>
+                        </div>
+                        <!--               <div class="item">
+                                            <label class="form-label"></label>
+                                            <a id="updateLog" href="javascript:void(0);" onclick="show_update_log();"></a>
+                                        </div>-->
+                        <div class="item">
+                            <label class="form-label"></label>
+                            <span id="span_status">状态</span>
+                            <span id="update_status" class="padding-left-10">未检测版本状态</span>
+                        </div>
+                        <div class="item section_hide" id="pro_section">
+                            <span class="item_text item_word" id="span_pro">固件下载进度</span>
+                            <span class="item_content">
+                                <div id="pro_layer" class="section_hide">
+                                    <div id="pro_bar_outer">
+                                        <div id="pro_bar"></div>
+                                    </div>
+                                    <div id="pro_info">
+                                        <div id="pro_msg">
+                                            <span id="pro_percent"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="pro_fin_layer" class="section_hide"></div>
+                            </span>
+                        </div>
+                        <div class="item opt">
+                            <input type="button" id="check_btn" onclick="update_check();" class="btn btn_version_check" value="版本检测">
+                            <input type="button" id="update_btn" onclick="start_update();" class="btn btn_update section_hide" value="立刻升级">
+                            <!--<input type="button" id="cancel_btn" onClick="cancel_update();" class="btn btn_cancel_download section_hide"/>-->
+                            <!-- <input type="hidden" id="update_uri"/>
+                             <input type="hidden" id="update_md5"/>-->
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="reset_div" class="section_hide">
+                <center>
+                    <div class="reset_tip">
+                        <span id="span_reset_tip">路由器正在重启，请勿断电，请稍候……&nbsp;</span>
+                        <span id="time"></span><a name="time_jump"></a><a id="time_jump" href="#time_jump"></a>
+                    </div>
+                </center>
+            </div>
+        </div>
+        <iframe name="iframe_hidden" id="iframe_hidden" width="0" height="0" frameborder="0"></iframe>
+
+
+        <div class="opacity_box large" id="logContent" style="display:none;">
+            <div class="head">
+                <span class="title" id="logTxtTitle">升级日志</span>
+                <a class="shut" id="logTxtTitleShut" href="javascript:void(0);">×</a>
+            </div>
+            <div id="update_log_cnt" class="opacity_inner_box large">
+                <div class="updateContentWrap">
+                    <div class="line"></div>
+                    <div id="logTxtContent"></div>
+                </div>
+            </div>
+            <div class="footer">
+                <input type="button" id="log_confirm_btn" class="btn margin-h submit_btn btn_confirm" value="确定">
+            </div>
+        </div>
+
+        <div id="repeater_op_layer" class="op_menu">
+            <ul>
+                <li><a href="javascript:void(0);">全选</a></li>
+                <li><a href="javascript:void(0);">版本升级</a></li>
+                <li><a class="drop" href="javascript:void(0);">手动更新固件<i></i></a></li>
+                <li class="active"><a class="drop" href="javascript:void(0);">配置管理<i></i></a>
+                    <ul>
+                        <li><a href="javascript:void(0);">网络配置</a></li>
+                        <li><a href="javascript:void(0);">修改管理密码</a></li>
+                        <li><a href="javascript:void(0);">重启中继器</a></li>
+                        <li><a href="javascript:void(0);">恢复出场设置</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% end %}

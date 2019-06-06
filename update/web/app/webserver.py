@@ -40,7 +40,7 @@ class Config(ConfigParser):
 
 def main():
     # print('%s start...' % __file__)
-    tornado.options.parse_command_line()
+    # tornado.options.parse_command_line()
     app = tornado.web.Application(
         [
             (r'/',LoginHandler),   

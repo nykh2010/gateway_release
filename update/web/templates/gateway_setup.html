@@ -1,0 +1,119 @@
+{% extends "mainboard.html" %}
+
+{% block container_wrap %}
+<div id="container_wrap">
+	<div class="nav">
+		<a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
+		<a href="javascript:void(0)">修改网关地址&nbsp;</a>
+		<button class="return_a">返回</button>
+	</div>
+	<div class="fix_ie_shadow"></div>
+	<div class="form-border-shadow has-tab">
+		<div id="warning_count_center" class="grey-text">
+			<p id="lan_setup_tip"></p>
+		</div>
+		<div id="lan_setup" class="section_show">
+			<div class="app-box">
+				<div class="box-bd">
+					<form id="lan_setup_frm" class="form-area" action="javascript:void(0);">
+						{% raw xsrf_form_html() %}
+						<div class="item">
+							<label class="form-label" id="">网关ID</label>
+							<input type="text" class="input-text input-biger" maxlength="16" size="27" name="gateway_id" id="gateway_id" autocomplete="off" value="{{gateway['sn']}}">
+						</div>
+						<div class="item opt">
+							<input type="submit" class="btn submit_btn btn_confirm" onclick="mygateway_setup_submit()" value="确定">
+						</div>
+					</form>
+					<script>
+						function mygateway_setup_submit() {
+							var obj = {};
+							obj.id = $("#gateway_id").val();
+							obj._xsrf = $("#lan_setup_frm").children("input[name='_xsrf']").val();
+							$.post("/gateway/update/id", obj, function(data){
+								if (data.status == "success") {
+									show_message("success");
+									return;
+								}
+								else {
+									show_message("error", data.err_msg);
+									return;
+								}
+							});
+						}
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+						<!-- <div class="item">
+							<label class="form-label" id="lbl_lan_ip_address">IP地址</label>
+			
+							<input type="text" class="input-text input-biger" maxlength="15" size="27" name="lan_ip" id="lan_ip_address" autocomplete="off" value="192.168.100.1">
+							<input type="hidden" id="old_lan_ip" value="192.168.100.1">
+						</div>
+						<div class="item">
+							<label class="form-label" id="lbl_lan_sub_mask">子网掩码</label>
+			
+							<input type="text" class="input-text input-biger" maxlength="15" size="27" name="lan_mask" id="lan_sub_mask" autocomplete="off" value="255.255.255.0">
+							<input type="hidden" id="old_lan_mask" value="255.255.255.0">
+						</div>
+						<div class="item">
+							<label class="form-label" id="lbl_dhcp_status">DHCP服务器</label>
+							<input type="hidden" id="dhcp_enable_hidden" name="dhcp_enable" value="1">
+							<div onclick="radio_toggle(this,'dhcp_state_change');" id="dhcp_enable" class="radio_form radio_on"></div>
+						</div>
+						<div id="dhcp_layer">
+							<div class="item">
+								<label class="form-label" id="lbl_dhcp_pool_start">地址池开始</label>
+			
+								<input type="text" class="input-text input-biger" maxlength="15" size="27" id="dhcp_pool_start" name="dhcp_start" autocomplete="off" value="192.168.100.2">
+							</div>
+							<div class="item">
+								<label class="form-label" id="lbl_dhcp_pool_end">地址池结束</label>
+			
+								<input type="text" class="input-text input-biger" maxlength="15" size="27" id="dhcp_pool_end" name="dhcp_end" autocomplete="off" value="192.168.100.254">
+							</div>
+						</div>
+						<div class="item opt">
+							<input type="submit" class="btn submit_btn btn_confirm" onclick="lan_setup_submit()" value="确定">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div id="dhcp_addr" class="section_hide">
+			<div class="app-box">
+				<div class="box-bd">
+					<form id="dhcp_addr_frm" class="form-area" action="javascript:void(0);">
+						<div class="item">
+							<label class="form-label" id="lbl_mac">MAC地址</label>
+							<input type="text" class="input-text input-biger" maxlength="17" size="17" id="dhcp_addr_mac" name="mac" autocomplete="off">
+							<input type="hidden" id="dhcp_addr_old_ip" name="old_ip">
+						</div>
+						<div class="item">
+							<label class="form-label" id="lbl_ip">IP地址</label>
+							<input type="text" class="input-text input-biger" maxlength="15" size="17" id="dhcp_addr_ip" name="ip" autocomplete="off">
+							<input type="hidden" id="dhcp_addr_old_mac" name="old_mac">
+						</div>
+						<div class="item opt">
+							<input type="hidden" id="deal" name="deal" value="add">
+							<input type="hidden" name="name">
+							<input type="submit" class="btn submit_btn btn_confirm margin-h" onclick="dhcp_addr_submit();" value="确定">
+							<input type="button" class="btn btn_cancel margin-h off" id="dhcp_addr_clear_btn" onclick="clear_dhcp_addr_input();" value="取消">
+						</div>
+					</form>
+				</div>	
+			</div>
+			<div class="app-box tab-box">
+	            <div class="box-hd">
+	            	<h3 class="box-title" id="dhcp_addr_title">地址保留列表</h3>
+	            </div>
+				<div class="box-bd">
+					<table id="dhcpAddrTab" class="data-table" style="width:90%; margin:0 auto;"><thead class="TabHeader"><tr><th class="th_0">序列号</th><th class="th_1">MAC地址</th><th class="th_2">IP地址</th><th class="th_3">操作</th></tr></thead><tbody class="TabBody"><tr><td colspan="4"><p style="padding:15px 0;">暂无任何设备…</p></td></tr></tbody></table>
+				</div>	
+			</div>
+		</div>
+	</div> -->
+{% end %}

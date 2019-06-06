@@ -1,0 +1,45 @@
+{% extends "mainboard.html" %}
+{% block container_wrap %}
+<div id="container_wrap">
+	<script type="text/javascript" src="/static/js/server_setup.js"></script>
+	<div class="nav">
+		<a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
+		<a href="javascript:void(0)">服务器连接设置&nbsp;</a>
+		<button class="return_a">返回</button>
+	</div>
+	<div class="fix_ie_shadow"></div>
+	<div class="form-border-shadow has-tab">
+		<div class="app-box">
+			<div class="box-bd form-area">
+				<form id="wan_common_form">
+					<input id="common_clone_mac" name="clone_mac" value="00-0E-C6-D7-FE-88" type="hidden">
+					<input id="common_default_mac" name="default_mac" value="A8-6B-7C-3A-AB-1C" type="hidden">
+					<input id="common_uiname" name="uiname" value="WAN1" type="hidden">
+					<input id="common_connect_type" name="connect_type" value="DHCP" type="hidden">
+				</form>
+				<!--</div>-->
+			</div>
+		</div>
+		<div class="app-box" style="padding-top:20px;">
+			<div class="box-bd" id="wan_setup_load">
+				<form id="wan_dhcp_form" class="form-area" name="wan_dhcp_form" action="javascript:void(0);">
+					{% raw xsrf_form_html() %}
+					<div class="item">
+						<!-- 服务器IP -->
+						<label class="form-label" id="">服务器IP</label>
+						<input name="sip" id="sip" size="27" maxlength="17" class="input-text input-big" autocomplete="off" value="{{server.host}}" type="text">
+					</div>
+					<div class="item">
+						<!-- 服务器端口 -->
+						<label class="form-label" id="">服务器端口</label>
+						<input name="sport" id="sport" size="27" maxlength="17" class="input-text input-big" autocomplete="off" value="{{server.port}}" type="text">
+					</div>
+					<div class="item opt">
+						<input class="btn submit_btn btn_confirm" onclick="myserver_config();" value="确定" type="submit">
+					</div>
+					<script>
+						
+					</script>
+	</div>
+</div>
+{% end %}

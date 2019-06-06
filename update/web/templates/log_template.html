@@ -1,0 +1,13 @@
+<tbody class="TabBody">
+    {% for index, record in enumerate(records) %}
+    {% if (index % 2) %}
+    <tr class="evenrow">
+    {% else %}
+    <tr>
+    {% end %}
+        <td>{{index}}</td>
+        <td>{{record['time']}}</td>
+        <td>{{record['msg']}}</td>
+    </tr>
+    {% end %}
+</tbody>

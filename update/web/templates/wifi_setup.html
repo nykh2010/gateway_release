@@ -1,0 +1,128 @@
+{% extends "mainboard.html" %}
+
+{% block container_wrap %}
+<div id="container_wrap">
+    <div class="nav">
+        <a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
+        <a href="javascript:void(0)">网络设置&nbsp;</a>
+        <button class="return_a">返回</button>
+    </div>
+    <div class="fix_ie_shadow"></div>
+    <div class="form-border-shadow has-tab">
+        <script>
+            function change_state(id) {
+                on = (id == '2_4')? '2_4': '5';
+                off = (id == '2_4')? '5': '2_4';
+                $("#div_wireless_"+on+"_title").addClass('on');
+                $("#div_wireless_"+off+"_title").removeClass('on');
+                $("#wireless_"+off+"_layer").addClass('section_hide');
+                $("#wireless_"+on+"_layer").removeClass('section_hide');
+            }
+        </script>
+        <div id="wireless_type_layer" class="tab_area">
+            <div data-type-index="0" id="div_wireless_2_4_title" class="tab-item on" onclick="change_state('2_4')">WiFi设置</div>
+            <div data-type-index="1" id="div_wireless_5_title" class="tab-item" onclick="change_state('5')">以太网设置</div>
+        </div>
+        <div id="wireless_2_4_layer">
+            <div id="warning_count_center" class="grey-text section_hide">
+                <p id="wireless_base_tip">本页面可以对您的无线网络进行配置，您可以在这里修改无线网络的名称、密码等信息。</p>
+            </div>
+            <form id="wireless_base_2_4_frm" class="form-area app-box" action="javascript:void(0);">
+                {% raw xsrf_form_html() %}
+                <div class="item">
+                    <label class="form-label" id="lbl_2_4_wireless_status">WiFi状态</label>
+                    <script type="text/javascript">
+                        {% if wifi.mode != 'disable' %}
+                            $("#wireless_2_4_enable").addClass("radio_on")
+                        {% else %}
+                            $("#wireless_2_4_enable").removeClass("radio_on")
+                        {% end %}
+                    </script>
+                    <div id="wireless_2_4_enable" class="radio_form radio_on" onclick="radio_toggle(this,'wireless_state_change');"></div>
+                    <!--onclick="radio_toggle(this,'wireless_state_change');"-->
+                    <input id="wireless_2_4_enable_hidden" name="wire_enable" value="1" type="hidden">
+                </div>
+                <div id="wireless_base_2_4_layer">
+                    <div class="item">
+                        <label class="form-label" id="lbl_2_4_ssid">WiFi名称(SSID) </label>
+                        <input class="input-text" id="wire_2_4_ssid" name="sta_ssid" maxlength="32" size="35" value="{{wifi.sta_ssid}}" type="text">
+                    </div>
+                    <!-- <div class="item" style="margin-top:-10px;">
+                        <label class="form-label"></label>
+                        <input id="ck_2_4_ssid_broadcast" onclick="ssid_broadcast_change('2_4');" type="checkbox">
+                        <label id="lbl_2_4_ssid_broadcast" for="ck_2_4_ssid_broadcast">隐藏网络名称</label>
+                        <input name="ssid_broadcast" id="wire_2_4_ssid_broadcast_hidden" value="1" type="hidden">
+                    </div> -->
+                    
+                    <div class="item">
+                        <label class="form-label" id="lbl_wls_2_4_ap_mode_sel">加密方式</label>
+                        <select id="wls_2_4_ap_mode_sel_1" name="encryption" style="width:258px;">
+                            <option value="0">无</option>
+                            <option value="3">WPA2-PSK AES</option>
+                            <option value="4">WPA/WPA2-PSK AES</option>
+                        </select>
+                    </div>
+                    <div class="item_line" id="wireless_2_4_key_layer">
+                        <label class="form-label" id="lbl_wireless_2_4_key_val">WiFi密码</label>
+                        <input class="input-text" maxlength="63" id="wireless_2_4_key_val" name="sta_passwd" size="35" onblur="remove_ck_pwd(this.id);" onkeyup="ck_pwd(this.id,this.value);" onfocus="ck_pwd(this.id,this.value);" value="{{wifi.sta_passwd}}" type="text">
+                    </div>
+                    <script>
+                        {% if wifi.encryption %}
+                            var c = $("#wls_2_4_ap_mode_sel_1").children("option[value={{wifi.encryption}}]").attr("selected","selected");
+                            console.log("%o", c);
+                            {% if wifi.encryption != "0" %}
+                                console.log("show");
+                                $("#wireless_2_4_key_layer").removeClass("section_hide").addClass('section_show');
+                            {% else %}
+                                $("#wireless_2_4_key_layer").removeClass("section_show").addClass('section_hide');
+                            {% end %}
+                        {% else %}
+                            $("#wls").children("option[value='0']").attr("selected","selected");
+                            $("#wireless_2_4_key_layer").removeClass("section_show").addClass('section_hide');
+                        {% end %}
+                    </script>
+                </div>
+                <div class="item opt">
+                    <input id="wire_2_4_side_band_hidden" name="channel_band" value="1" type="hidden">
+                    <input id="wire_2_4_mac_hidden" name="wire_mac" value="A8-6B-7C-3A-AB-1B" type="hidden">
+                    <input class="btn submit_btn btn_confirm" onclick="mywireless_base_set('2_4')" value="确定" type="submit">
+                    <!-- <input class="btn submit_btn btn_confirm" onclick="test()" value="确定" type="submit"> -->
+                </div>
+                <div class="wifi_tip section_hide" id="wifi_2_4_tip">开启WiFi的时间在WiFi定时关闭时间内，您可以在<a href="javascript:void(0);">WiFi定时关闭</a>页面修改WiFi关闭时间</div>
+            </form>
+        </div>
+        <div id="wireless_5_layer" class="section_hide">
+            <form id="wireless_base_5_frm" class="form-area app-box" action="javascript:void(0);">
+                {% raw xsrf_form_html() %}
+                <div class="item">
+                    <label class="form-label" id="lbl_wireless_5_status">以太网状态</label>
+                    <select id="eth_method" name="method" style="width:258px;">
+                        <option value="disable">Disable</option>
+                        <option value="dhcp">Automatic(DHCP)</option>
+                        <option value="static">Manual</option>
+                    </select>
+                    <script>
+                        var c = $("#eth_method").children("option[value={{eth.mode}}]").attr("selected","selected");
+                    </script>
+                </div>
+                <div id="wireless_base_5_layer">
+                    <div class="item">
+                        <label class="form-label" id="lbl_5_ssid">IP地址</label>
+                        <input class="input-text" id="wire_address" name="wire_address" maxlength="32" size="35" type="text" value="{{eth.inet4_addr}}">
+                    </div>
+                    <div class="item">
+                        <label class="form-label" id="lbl_wls_5_ap_mode_sel">子网掩码</label>
+                        <input class="input-text" id="wire_netmask" name="wire_netmask" maxlength="32" size="35" type="text" value="{{eth.netmask}}">
+                    </div>
+                </div>
+                <div class="item opt">
+                    <input id="wire_5_side_band_hidden" name="channel_band" value="1" type="hidden">
+                    <input id="wire_5_mac_hidden" name="wire_mac" type="hidden">
+                    <input class="btn submit_btn btn_confirm" onclick="mywireless_base_set('5')" value="确定" type="submit">
+                </div>
+                <div class="wifi_tip section_hide" id="wifi_5_tip">开启WiFi的时间在WiFi定时关闭时间内，您可以在<a href="javascript:void(0);">WiFi定时关闭</a>页面修改WiFi关闭时间</div>
+            </form>
+        </div>
+    </div>
+</div>
+{% end %}

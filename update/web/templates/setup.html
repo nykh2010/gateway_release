@@ -1,0 +1,169 @@
+{% extends "mainboard.html" %}
+
+{% block container_wrap %}
+<div id="container_wrap">
+    <script>
+        function change_tab(id) {
+            document.getElementById(id+"_title").setAttribute('class','tab_title cur');
+            document.getElementById(id+"_tab_item").setAttribute('class','tab_item_container');
+            if (id == 'fast') {
+                document.getElementById("advance_title").setAttribute('class', 'tab_title');
+                document.getElementById("advance_tab_item").setAttribute('class','tab_item_container section_hide');
+            }
+            else {
+                document.getElementById("fast_title").setAttribute('class', 'tab_title');
+                document.getElementById("fast_tab_item").setAttribute('class','tab_item_container section_hide');
+            }
+        }
+        
+        function change_container(url) {
+            window.location.href = url;
+        }
+        // function change_container(id) {
+        //     var url_request = "http://localhost:8000/setup/"+id;
+        //     console.log("%o", url_request);
+        //     var html_obj = $.ajax({
+        //         url:url_request,
+        //         type:'GET',
+        //         success: function(data) {
+        //             $('#container_wrap').replaceWith(data);
+        //         }
+        //     });
+        //     // html_obj = $.get({url:url_request, type:"GET", async:false, success:function(data){
+        //     //     console.log("ajax success");
+        //     // }});
+        //     // html_obj = $.get({url:url_request});
+        //     console.log("%o\n",html_obj);
+            
+        // }
+    </script>
+    <div class="tab_container router_setting">
+        <div id="tab_wrapper">
+            <div id="fast_title" class="tab_title cur" onclick="change_tab('fast')">
+                <h3>快捷设置</h3>
+            </div>
+            <div id="advance_title" class="tab_title" onclick="change_tab('advance')">
+                <h3>高级设置</h3>
+            </div>
+        </div>
+        <div id="fast_tab_item" class="tab_item_container">
+            <ul>
+                <li class="wireless_base_tab" onclick="change_container('/wifi')">
+                    <div id="wireless_base_tab" class="ext-item">
+                        <div class="menu_text">WiFi设置</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+                <li class="wan_setup_tab" onclick="change_container('/server')">
+                    <div id="wan_setup_tab" class="ext-item">
+                        <div class="menu_text">服务器连接设置</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+                <li class="thirdend misc_reboot_tab" onclick="change_container('/gateway/restart')">
+                    <div id="misc_reboot_tab" class="ext-item">
+                        <div class="menu_text">重启网关</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+            </ul>
+        </div>
+        <div id="advance_tab_item" class="tab_item_container section_hide">
+            <ul>
+                <li class="password_tab" onclick="change_container('/auth')">
+                    <div id="password_tab" class="ext-item">
+                        <div class="menu_text">修改管理密码</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+                <li class="lan_setup_tab" onclick="change_container('/gateway/id')">
+                    <div id="lan_setup_tab" class="ext-item">
+                        <div class="menu_text">修改网关地址</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+                <li class="thirdend update_tab" onclick="change_container('/gateway/firmware')">
+                    <div id="update_tab" class="ext-item">
+                        <div class="menu_text">系统升级</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+                <li class="system_time_tab">
+                    <div id="system_time_tab" class="ext-item" onclick="change_container('/gateway/time')">
+                        <div class="menu_text">时间设置</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+                <li class="rally_default_tab" onclick="change_container('/gateway/restore')">
+                    <div id="rally_default_tab" class="ext-item">
+                        <div class="menu_text">恢复出厂设置</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+                <li class="thirdend developer_tab" onclick="change_container('/radio')">
+                    <div id="developer_tab" class="ext-item">
+                        <div class="menu_text">射频设置</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+                <li class="log_tab" onclick="change_container('/log')">
+                    <div id="log_tab" class="ext-item">
+                        <div class="menu_text">日志查询</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+                <li class="router_info_tab" onclick="change_container('/status')">
+                    <div id="router_info_tab" class="ext-item">
+                        <div class="menu_text">当前状态</div>
+                        <div class="float_info">
+                            <div class="detail"> 
+                                <p class="wisp-info js-txt-wisp-status"></p>
+                            </div>
+                        </div> 
+                    </div> 
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% end %}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]>
+<html class="ie6" lang="zh-cn"><![endif]-->
+<!--[if IE 7 ]>
+<html class="ie7" lang="zh-cn"><![endif]-->
+<!--[if IE 8 ]>
+<html class="ie8" lang="zh-cn"><![endif]-->
+<!--[if IE 9 ]>
+<html class="ie9" lang="zh-cn"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html class="w3c"><!--<![endif]--><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    <title>多功能通用网关</title>
+    <!-- <link rel="shortcut icon" href="http://192.168.100.1/favicon.ico" type="image/x-icon"> -->
+    <link type="text/css" href="/static/css/reset.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/default.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/nav.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/new_style.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/store_manage.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/smart_home.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/js/jquery-1.js"></script>
+	<script type="text/javascript" src="/static/js/jq.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script type="text/javascript" src="/static/js/jquery_002.js"></script>
+    <script type="text/javascript" src="/static/js/gateway.js"></script>
+    <script type="text/javascript" src="/static/js/cookie.js"></script>
+    <script type="text/javascript" src="/static/js/module.js"></script>
+    <script type="text/javascript" src="/static/js/err.js"></script>
+	<script type="text/javascript" src="/static/js/table.js"></script>
+    <script type="text/javascript" src="/static/js/temp.js"></script>
+    <script type="text/javascript" src="/static/js/aes.js"></script>
+    <script type="text/javascript" src="/static/js/b64.js"></script>
+    <script type="text/javascript" src="/static/js/language_CN.js"></script>
+    <script type="text/javascript" src="/static/js/new_lib.js"></script>
+    <script type="text/javascript" src="/static/js/menu_admin.js"></script>
+    <script type="text/javascript" src="/static/js/device_manage.js"></script>
+    <script type="text/javascript" src="/static/js/network_setup.js"></script>
+    <script type="text/javascript" src="/static/js/app.js"></script>
+    <script type="text/javascript" src="/static/js/app_list.js"></script>
+    <script type="text/javascript" src="/static/js/wireless_base.js"></script>
+    <script type="text/javascript" src="/static/js/log.js"></script>
+    <script type="text/javascript" src="/static/js/new_index.js"></script>
+    <script type="text/javascript" src="/static/js/smart_home.js"></script>
+    <script type="text/javascript" src="/static/js/store_manage.js"></script>
+    <script>
+
+    </script>
+<script type="text/javascript" id="netcore_network_setup" src="/static/js/network_setup.js"></script><script type="text/javascript" id="netcore_app" src="/static/js/app.js"></script><script type="text/javascript" id="netcore_app_list" src="/static/js/app_list.js"></script><script type="text/javascript" id="netcore_wireless_base" src="/static/js/wireless_base.js"></script><script type="text/javascript" id="netcore_log" src="/static/js/log.js"></script><script type="text/javascript" id="netcore_new_index" src="/static/js/new_index.js"></script><script type="text/javascript" id="netcore_smart_home" src="/static/js/smart_home.js"></script><script type="text/javascript" id="netcore_store_manage" src="/static/js/store_manage.js"></script></head>
+<body style="background: rgb(243, 244, 246) none repeat scroll 0% 0%;">
+<!-- 预加载图片 -->
+    <div style="position: absolute;clip:rect(1px,1px,1px,1px);display: inline">
+        <img style="height: 1px;width: 0px" src="/static/images/msg-error.png">
+        <img style="height: 0px;width: 0px" src="/static/images/msg-info.png">
+        <img style="height: 0px;width: 0px" src="/static/images/msg-success.png">
+        <!--<img style="height: 0px;width: 0px" src="http://luyouw.360.cn/images/small-bg.png"/>-->
+    </div>
+    <!-- <div class="down_app">
+        <div class="down_app_wrap">
+            <span id="down_app_tip">下载360智能管家，用手机管理路由器</span>
+            <button class="down_app_btn" onclick="download_now();">立即体验</button>
+            <span id="download_later_span" class="download_later" onclick="download_later();">稍后体验</span>
+        </div>
+    </div> -->
+    <div class="topbar" style="top: 0px;">
+        <div class="container">
+            <div class="logo">
+                <li class="index_page" style="color: white" ><b>多功能通用网关</b></li>
+                <!-- <img src="/static/images/nav-logo.png" id="logo_img" alt="360安全路由"> -->
+            </div>
+            <!-- <div id="sidebar_wrap">
+                <ul>
+                    <li id="index_page" class="index_page" data-us-fov-count="3200"><b id="index_page_b">我的安全路由</b></li>
+                    <li id="nav_addon" class="nav_addon" data-us-fov-count="3201"><b id="nav_addon_b">功能扩展</b></li>
+                    <li id="nav_setting" class="nav_setting current" data-us-fov-count="3202"><b id="nav_setting_b">路由设置</b></li>
+                    <li id="store_manage" class="store_manage"><b id="store_manage_b">USB管理</b></li>
+                    <li id="nav_mobile_app" class="nav_mobile_app" data-us-fov-count="3203"><b id="nav_mobile_app_b">用手机管理路由</b></li>
+                </ul>
+            </div> -->
+            <ul class="nav">
+                <!-- <li>
+                    <a id="official_website" href="http://luyouw.360.cn/" onclick="office_website(this);" data-us-fov-count="3204" target="_blank">去官网</a>
+                </li> -->
+                <li class="last">
+                    <a id="i_login_out" href="/logout">退出管理</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="article" class="cleatab_titleix nav-bg" style="padding-top: 75px;">
+        {% block container_wrap %}
+        {% end%}
+    </div>
+    <!-- <div id="footer">Copyright©2005-2017 360.CN All Rights Reserved 360安全中心</div>
+    <div id="footer-os"><p id="os_txt">360 OS For Home</p></div> -->
+    <div id="lock_div" style="display: none;"></div>
+    <div id="quick_lock_div"></div>
+    <div id="message_layer" style="left: 776.5px; top: 186.5px;">
+        <div id="msg_type" class="wait"></div>
+        <div id="msg" class="word"></div>
+    </div>
+    <div id="dialog">
+        <form id="dialog_frm" action="javascript:void(0);">
+            {% raw xsrf_form_html() %}
+            <div id="dialog_head">确认操作</div>
+            <div id="dialog_wrap">
+                <div id="dialog_msg"></div>
+                <input class="dialog_focus" type="text">
+            </div>
+            <div id="dialog_btn_layer_wrap" class="form-area">
+                <div id="dialog_btn_layer" class="item opt">
+                    <input id="dialog_confirm_btn" class="btn margin-h submit_btn btn_confirm" value="确定" type="submit">
+                    <input id="dialog_cancel_btn" class="btn gray btn_cancel margin-h" value="取消" type="button">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="opacity_box small" id="update_log_layer" style="display:none">
+        <div class="head">
+            <span class="title"></span>
+            <a id="notice_close" class="shut" href="javascript:void(0);">×</a>
+        </div>
+        <div class="opacity_inner_box small">
+            <h2><span id="span_update">你已成功升级到</span><span id="notice_version"></span><span id="span_version">版本</span></h2>
+            <div class="updateContentWrap">
+                <div class="line"></div>
+                <div id="NoticelogContent"></div>
+            </div>
+        </div>
+        <div class="footer">
+            <input id="log_notice_confirm_btn" class="btn margin-h submit_btn btn_confirm" value="确定" type="button">
+        </div>
+    </div>
+
+    <div id="toolTipsBar" style="left: 1430px; top: 329px;">
+        <ul>
+            <li>
+                <a href="javascript:void(0)" id="BackToTop" style="display: none;"></a>
+            </li>
+            <li>
+                <a href="javascript:void(0)" id="GoToBottom" style="display: inline-block;"></a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html> 

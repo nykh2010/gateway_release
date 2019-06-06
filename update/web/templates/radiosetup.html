@@ -1,0 +1,39 @@
+{% extends "mainboard.html" %}
+{% block container_wrap %}
+<div id="container_wrap">
+    <div class="nav">
+        <a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
+        <a href="javascript:void(0)">射频设置&nbsp;</a>
+        <button class="return_a">返回</button>
+    </div>
+    <div class="fix_ie_shadow"></div>
+    <div class="form-border-shadow has-tab">
+        <script type="text/javascript">
+            function change_state(obj) {
+                if (obj == "2") {
+                    $("#div_radio_1_title").removeClass("on");
+                    $("#div_radio_2_title").addClass("on");
+                    $("#wireless_advance_layer_1").addClass("section_hide");
+                    $("#wireless_advance_layer_2").removeClass("section_hide");
+                }
+                else {
+                    $("#div_radio_2_title").removeClass("on");
+                    $("#div_radio_1_title").addClass("on");
+                    $("#wireless_advance_layer_2").addClass("section_hide");
+                    $("#wireless_advance_layer_1").removeClass("section_hide");
+                }
+            }    
+        </script>
+        <div id="wireless_type_layer" class="tab_area">
+            <div data-type-index="0" id="div_radio_1_title" class="tab-item on" onclick="change_state('1')">射频模块1</div>
+            <div data-type-index="1" id="div_radio_2_title" class="tab-item" onclick="change_state('2')">射频模块2</div>
+        </div>
+        <div id="wireless_advance_layer_1" class="app-box">
+            {% raw radio_1 %}
+        </div>
+        <div id="wireless_advance_layer_2" class="app-box section_hide">
+            {% raw radio_2 %}
+        </div>
+    </div>
+</div>
+{% end %}

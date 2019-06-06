@@ -1,0 +1,91 @@
+body{
+	font-size: 12px;
+	background: #f5f6f8  center 420px no-repeat;
+}
+#login_pwd { -webkit-box-shadow: 0 0 0px 1000px white inset; }
+.login-area{
+	width: 960px;
+	margin: 0 auto;
+	padding-top: 155px;
+}
+.login-area .slogan{
+	margin: 0 auto 60px;
+    font-size: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #428BEF;
+}
+.login-area .login{
+	position: relative;
+	width: 376px;
+	margin: 0 auto 15px;
+}
+.login-area .input-area,
+.login-area .btn-area{
+	height: 36px;
+    margin-bottom: 30px;
+}
+.login-area .input-label{
+	float: left;
+	width: 60px;
+	line-height: 36px;
+}
+.login-area .input-area .input-txt{
+	width: 238px;
+	height: 16px;
+	padding: 10px;
+	font-size: 16px;
+	border: 1px solid #d8d8d8;
+}
+.login-area .button-area .btn_login{
+	width: 260px;
+	height: 36px;
+	font-size: 20px;
+	line-height: 36px;
+	margin-left: 60px;
+}
+.login-area .security-status{
+	position: absolute;
+	top: 40px;
+	left: 59px;
+	width: 261px;
+}
+.ie6 .login-area .input-area .input-label{
+	margin-right: -3px;
+}
+.login-area .pwd_status{
+	margin: 0;
+	width: auto;
+	float: none;
+}
+.login-area .pwd_status span{
+	border-color: #f5f6f8;
+}
+#tip{
+	padding-top: 50px;
+}
+#tip_center{
+	text-align: center;
+}
+.pass-info{
+    color: #428BEF;
+    margin: 0 auto;
+    text-align: center;
+    padding-left: 0.5em;
+}
+a{
+    color: #428bef;
+    text-decoration: none;
+    outline: none;
+    text-decoration: underline;
+}
+a:link{
+    color: #428bef;
+}
+a:visited{
+    color: #428bef;
+}
+a:hover{
+    color: #81d82c;
+    text-decoration: underline;
+}

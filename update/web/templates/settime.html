@@ -1,0 +1,99 @@
+{% extends "mainboard.html" %}
+{% block container_wrap %}
+<div id="container_wrap">
+    <script type="text/javascript">
+        var year;
+        var month;
+        var days;        
+        var hours;
+        var minutes;
+        var seconds;
+        function checkTime(i)
+        {
+            if (i<10) {
+                i="0" + i;
+            }
+            return i;
+        }
+        
+        $(document).ready(function(){
+            $("#system_year").val(year);
+            $("#system_month").val(month);
+            $("#system_day").val(days);
+            $("#system_hour").val(hours);
+            $("#system_minute").val(minutes);
+            $("#system_second").val(seconds);
+        })
+    </script>
+    <div class="nav">
+        <a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
+        <a href="javascript:void(0)">时间设置&nbsp;</a>
+        <button class="return_a">返回</button>
+    </div>
+    <div class="fix_ie_shadow"></div>
+    <div class="form-border-shadow">
+        <!-- <div id="warning_count_center" class="grey-text">
+            <p id="system_time_tip">设置路由器的系统时间，您可以选择互联网上获取或者手动设置路由器时间。<br>注意：关闭路由器电源后，时间信息会丢失。如果您选择从互联网上获取时间，路由器将在连接Internet后自动获取当前时间。只有成功通过互联网获取或手动设置路由器时间后，其他功能（如定时关机、儿童保护）中的时间限定才会生效。</p>
+        </div> -->
+        <form id="system_time_frm" class="form-area app-box" action="javascript:void(0);">
+            {% raw xsrf_form_html() %}
+            <div class="item">
+                <label class="form-label" id="span_cur_time">当前系统时间</label>
+                <span id="current_time"></span>
+            </div>
+            <div class="item">
+                <label class="form-label" id="lbl_get_time">网关时间获取方式</label>
+                <input type="radio" id="get_time_mode0" onclick="change_get_time_mode(this.value);" value="0" name="get_time_mode" checked="checked">
+                <label id="lbl_get_time_mode0" for="get_time_mode0">与系统时间一致</label>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" id="get_time_mode1" onclick="change_get_time_mode(this.value);" value="1" name="get_time_mode">
+                <label id="lbl_get_time_mode1" for="get_time_mode1">手动配置</label>
+                <input type="hidden" name="work_mode" id="get_time_mode_hidden" value="0">
+            </div>
+            <div class="section_hide" id="manual_set_div">
+                <div class="item">
+                    <label class="form-label" id="lbl_system_date">日期</label>
+
+                    <input type="text" size="5" maxlength="4" id="system_year" name="year" class="input-text input-small" autocomplete="off">
+                    <span class="word_sep">
+                        <label id="lbl_system_year" class="time-label" for="system_year">年</label>
+                    </span>
+                    <input type="text" size="5" maxlength="2" id="system_month" name="month" class="input-text input-small" autocomplete="off">
+                    <span class="word_sep">
+                        <label id="lbl_system_month" class="time-label" for="system_month">月</label>
+                    </span>
+                    <input type="text" size="5" maxlength="2" id="system_day" name="day" class="input-text input-small" autocomplete="off">
+                    <span class="word_sep">
+                        <label id="lbl_system_day" class="time-label" for="system_day">日</label>
+                    </span>
+                </div>
+                <div class="item">
+                    <!-- <input type="datetime"> -->
+                    <label class="form-label" id="lbl_system_time">时间</label>
+
+                    <input type="text" size="5" maxlength="2" id="system_hour" name="hour" class="input-text input-small" autocomplete="off">
+                    <span class="word_sep">
+                        <label id="lbl_system_hour" class="time-label" for="system_hour">时</label>
+                    </span>
+                    <input type="text" size="5" maxlength="2" id="system_minute" name="minute" class="input-text input-small" autocomplete="off">
+                    <span class="word_sep">
+                        <label id="lbl_system_minute" class="time-label" for="system_minute">分</label>
+                    </span>
+                    <input type="text" size="5" maxlength="2" id="system_second" name="second" class="input-text input-small" autocomplete="off">
+                    <span class="word_sep">
+                        <label id="lbl_system_second" class="time-label" for="system_second">秒</label>
+                    </span>
+                </div>
+            </div>
+            <div class="item section_show" id="ntp_div">
+
+                <label class="form-label" id="lbl_timezone">时区</label>
+                <select id="timezone_sel" name="NTP"><option value="12">(GMT-12:00)埃尼威托克,夸贾林岛</option><option value="11">(GMT-11:00)中途岛,萨摩亚群岛</option><option value="10">(GMT-10:00)夏威夷</option><option value="9">(GMT-09:00)阿拉斯加</option><option value="8">(GMT-08:00)太平洋时间(美国和加拿大);蒂华</option><option value="7">(GMT-07:00)山地时间(美国和加拿大);亚利桑那</option><option value="6">(GMT-06:00)中部时间(美国和加拿大);中美洲</option><option value="5">(GMT-05:00)东部时间(美国和加拿大);波哥达</option><option value="4">(GMT-04:00)大西洋时间(加拿大);加拉加斯</option><option value="3">(GMT-03:00)巴西利亚,布宜诺斯艾利斯,乔治敦,格陵兰</option><option value="2">(GMT-02:00)中大西洋</option><option value="1">(GMT-01:00)佛得角群岛,亚速尔群岛</option><option value="0">(GMT)格林威治平时;都柏林,爱丁堡,伦敦,里斯本</option><option value="-1">(GMT+01:00)阿姆斯特丹,柏林,罗马,斯得哥尔摩,巴黎</option><option value="-2">(GMT+02:00)开罗,雅典,伊斯坦布尔,明斯克,耶路撒冷</option><option value="-3">(GMT+03:00)巴格达,科威特,利雅得,莫斯科,圣彼得堡</option><option value="-4">(GMT+04:00)阿布扎比,马斯喀特,巴库,第比利斯,埃里温</option><option value="-5">(GMT+05:00)叶卡捷林堡,伊斯兰堡,卡拉奇,塔什干</option><option value="-6">(GMT+06:00)阿拉木图,新西伯利亚,阿斯塔纳,达卡</option><option value="-7">(GMT+07:00)曼谷,雅加达,河内</option><option value="-8" selected>(GMT+08:00)北京,重庆,乌鲁木齐,香港特别行政区,台北</option><option value="-9">(GMT+09:00)东京,大坂,札幌,汉城,雅库茨克</option><option value="-10">(GMT+10:00)布里斯班,关岛,堪培拉,墨尔本,悉尼</option><option value="-11">(GMT+11:00)马加丹,索罗门群岛,新喀里多尼亚</option><option value="-12">(GMT+12:00)富士,勘察加半岛,马绍尔群岛,惠灵顿</option><option value="-13">(GMT+13:00)努库阿洛法</option></select>
+            </div>
+            <div class="item opt">
+                <input type="submit" class="btn submit_btn btn_confirm" onclick="system_time_submit()" value="确定">
+            </div>
+        </form>
+    </div>
+</div>
+{% end %}
