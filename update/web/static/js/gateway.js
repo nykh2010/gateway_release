@@ -3,7 +3,14 @@ $(function(){
         window.history.back();
     });
 
-    var timer = setInterval(refresh_sys_time, 1000);
+    //var timer = setInterval(refresh_sys_time, 1000);
+
+    function checkTime(i) {
+        if (i<10) {
+            i="0" + i;
+        }
+        return i;
+    }
     
     function refresh_sys_time() {
         var time = new Date();
@@ -23,19 +30,5 @@ $(function(){
         $("#current_time").html(strtime);
         delete time;
     }
-
-    $("#backup").click(function(){
-        var xsrf = $("#restore_default_form").children("input[name='_xsrf']").val();
-        var obj = {};
-        obj._xsrf = xsrf;
-        $.post('/gateway/backup', obj, function(data){
-            if (data.status == 'success') {
-                show_message('success');
-            }
-            else {
-                show_message('error', data.err_msg);
-            }
-        });
-    });
 });
 

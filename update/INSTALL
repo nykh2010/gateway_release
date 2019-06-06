@@ -24,7 +24,9 @@ if path_config.has_option('INSTALL', 'config_path'):
 if path_config.has_option('INSTALL', 'need_reboot'):
     need_reboot = path_config.getboolean('INSTALL', 'need_reboot')
 
-app_name = os.path.basename(bin_path)
+app_name = None
+if bin_path:
+    app_name = os.path.basename(bin_path)
 
 def backup():
     '''备份'''
@@ -42,7 +44,8 @@ def rollback():
     os.chdir(backup_path)
     if config_path:
         os.system("cp %s/* %s -rf" % (os.path.join(backup_path, 'config'), config_path))
-    os.system("cp %s %s -rf" % (app_name, os.path.dirname(bin_path)))
+    if app_name:
+        os.system("cp %s %s -rf" % (app_name, os.path.dirname(bin_path)))
 
 count = 10
 def reboot():
@@ -62,9 +65,10 @@ try:
     backup()
     print("backup complete")
     os.chdir(os.path.dirname(os.path.abspath(__file__)))     # 切换至当前目录
-    print("kill %s process" % app_name)
-    os.system("/home/root/kill_process %s" % app_name)      # 杀死所有应用
-    os.system("cp %s %s -rf" % (app_name, os.path.dirname(bin_path)))   # 拷贝应用程序
+    if app_name:
+        print("kill %s process" % app_name)
+        os.system("/home/root/kill_process %s" % app_name)      # 杀死所有应用
+        os.system("cp %s %s -rf" % (app_name, os.path.dirname(bin_path)))   # 拷贝应用程序
     if config_path:
         os.system("cp config/* %s -rf" % config_path)       # 拷贝配置文件
     print("copy complete")

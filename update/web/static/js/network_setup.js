@@ -211,6 +211,8 @@ function lan_setup_submit() {
 }
 
 
+
+
 function dhcp_state_change(str) {
     reg_map["lan_setup_frm"][2] = {};
     reg_map["lan_setup_frm"][3] = {};

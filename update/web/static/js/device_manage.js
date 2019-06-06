@@ -80,6 +80,22 @@ function rstore_default_param(obj){
     });
 }
 
+function backup(){
+    var xsrf = $("#restore_default_form").children("input[name='_xsrf']").val();
+    var obj = {};
+    obj._xsrf = xsrf;
+    $.post("/gateway/backup", obj, function (data) {
+        if (data.status == 'success') {
+            show_message('success');
+            return;
+        }
+        else {
+            show_message('error', data.err_msg);
+            return;
+        }
+    });
+}
+
 function param_save_change(){
 	var str = $("#param_save_hidden").val();
 	if(str == "0"){

@@ -2,7 +2,7 @@ import os
 import json
 import urllib
 
-with os.popen("curl --form \"file=@/home/xulingfeng/project/gateway_release/update/web.tar.gz\" http://10.252.96.247:8090/api/upload") as postfp:
+with os.popen("curl --form \"file=@/home/xulingfeng/project/gateway_release/update/update.tar.gz\" http://10.252.96.247:8090/api/upload") as postfp:
     resp = postfp.read()
 
 resp_dict = json.loads(resp, encoding='utf-8')
@@ -13,7 +13,7 @@ data = {
     "from": "iot_web_console",
     "to": [
         {
-            "sn": "PC-XULINGFENG-XULINGFENG"
+            "sn": "8000000000000055"
         },
     ],
     "command": "upgrade",
@@ -21,7 +21,7 @@ data = {
     "body": {
         "type":"webfile",
         "downcmd":"wget %s" % resp_dict['data']['url'],
-        "workdir":"/media",
+        "workdir":"/media/upgrade",
         "script":"upgrade.sh"
     },
     "publishNow": True,

@@ -90,7 +90,7 @@ class GatewayHandler(RequestHandler):
                 return
             else:
                 os.system("/home/root/restore &")
-                ret['success']
+                ret['status'] = 'success'
         elif method == 'backup':
             os.system('cp /usr/local/bin /media -rf')
             os.system('cp /etc/gateway /media -rf')
