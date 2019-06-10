@@ -9,7 +9,7 @@ from downlink import downlink
 import os
 
 class WifiHandler(RequestHandler):
-    connect_path = '/home/xulingfeng/project/gateway_release/system/connect.py'
+    connect_path = 'python3 /usr/local/bin/tools/connect.py'
     def sent_cmd(self, cmd):
         with os.popen(cmd) as fp:
             res = fp.readlines()
@@ -28,7 +28,7 @@ class WifiHandler(RequestHandler):
                 device = self.get_argument('device')
                 if device == 'eth':
                     self.sent_cmd("%s -i ethernet --command set --mode %s --addr %s --netmask %s" % \
-                        (self.connect_path, self.get_argument('mode'), self.get_argument('wire_address'), self.get_argument('wire_netmask')))
+                        (self.connect_path, self.get_argument('mode'), self.get_argument('address'), self.get_argument('netmask')))
                     ret['status'] = 'success'
                 else:
                     self.sent_cmd("%s -i wifi --command set --mode %s --ssid %s --psk %s" % \
