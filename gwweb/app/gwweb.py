@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
-import tornado.httpserver
-from tornado import web, log
-from tornado.web import RequestHandler
-from tornado.options import define,options
-import uuid
-import os
-import time
-from socketserver import TCPServer,UDPServer,BaseRequestHandler
-from queue import Queue
-from threading import Thread
-import re
+
+# import time
+# from socketserver import TCPServer,UDPServer,BaseRequestHandler
+# from queue import Queue
+# from threading import Thread
+# import re
 import sys
 from gateway import GatewayHandler
 from auth import AuthHandler,LoginHandler,LogoutHandler
@@ -24,9 +19,7 @@ from configparser import ConfigParser
 
 # define('port',default=8000,type=int)
 # define('host',default='0.0.0.0',type=str)
-define('log_to_stderr', type=bool, default=False)
-define('log_file_prefix', type=str, default='/var/logs/web.log')
-define('log_file_max_size', type=int, default=5 * 1000 * 1000)
+
 
 class Config(ConfigParser):
     def __init__(self, path):
@@ -81,4 +74,13 @@ if __name__ == '__main__':
     if '--version' in sys.argv:
         print("1.0.0")
         sys.exit(0)
+    import tornado.httpserver
+    from tornado import web, log
+    # from tornado.web import RequestHandler
+    from tornado.options import define,options
+    # import uuid
+    import os
+    define('log_to_stderr', type=bool, default=False)
+    define('log_file_prefix', type=str, default='/var/logs/web.log')
+    define('log_file_max_size', type=int, default=5 * 1000 * 1000)
     main()

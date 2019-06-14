@@ -1,6 +1,5 @@
 from tornado.web import RequestHandler
 from auth import auth
-from config import Config
 import os
 from hashlib import sha256
 
