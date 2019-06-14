@@ -9,10 +9,10 @@ class StatusHandler(RequestHandler):
         return task_config
     
     def get_inet_status(self):
-        with os.popen("python3 /usr/local/bin/tools/connect.py -i ethernet --command get") as fp:
+        with os.popen("/home/root/connect -i ethernet --command get") as fp:
             res = fp.readlines()
         eth0 = res[1].split(':')[1]
-        with os.popen("python3 /usr/local/bin/tools/connect.py -i wifi --command get") as fp:
+        with os.popen("/home/root/connect -i wifi --command get") as fp:
             res = fp.readlines()
         wifi = res[-2].split(':')[1]
         return eth0, wifi

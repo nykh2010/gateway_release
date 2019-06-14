@@ -78,4 +78,7 @@ def main():
     # pwindows.join()
 
 if __name__ == '__main__':
+    if '--version' in sys.argv:
+        print("v1.0.0")
+        sys.exit(0)
     main()

@@ -25,7 +25,7 @@ class ServerHandler(RequestHandler):
                 port = self.get_argument('port')
                 if int(port) > 65536:
                     raise Exception("端口号非法")
-                os.system('python3 /usr/local/bin/tools/server.py --host={} --port={}'.format(host, port))
+                os.system('/home/root/server --host={} --port={}'.format(host, port))
                 ret = {'status':'success'}
             except Exception as e:
                 ret['status'] = 'failed'

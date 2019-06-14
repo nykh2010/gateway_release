@@ -9,7 +9,7 @@ from downlink import downlink
 import os
 
 class WifiHandler(RequestHandler):
-    connect_path = 'python3 /usr/local/bin/tools/connect.py'
+    connect_path = '/home/root/connect'
     def sent_cmd(self, cmd):
         with os.popen(cmd) as fp:
             res = fp.readlines()
