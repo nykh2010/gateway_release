@@ -41,7 +41,7 @@ class GatewayHandler(RequestHandler):
                     # gateway.save()
                     status = os.system('/home/root/kill_process msghub')
                     ret['status'] = 'success'
-                    if status != 0:
+                    if status != '0':
                         raise Exception("参数错误")                          
                 except Exception as e:
                     ret['status'] = 'failed'

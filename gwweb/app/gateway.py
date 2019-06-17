@@ -39,9 +39,10 @@ class GatewayHandler(RequestHandler):
                     # gateway.set_item('sn', gateway_id)
                     # gateway.save()
                     status = os.system('/home/root/kill_process msghub')
+                    status = os.system('/home/root/kill_process gwbridge')
                     ret['status'] = 'success'
-                    if status != 0:
-                        raise Exception("参数错误")                          
+                    # if status != 0:
+                    #     raise Exception("参数错误")                          
                 except Exception as e:
                     ret['status'] = 'failed'
                     ret['err_msg'] = e.__str__()
