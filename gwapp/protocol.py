@@ -106,7 +106,8 @@ class OnlineRequest(Handle):
                         'sn': gw.get_gw_id()
                     }
                     LOG.info("start query")
-                    resp = self.query_task('http://10.252.97.88/iotgw/api/v1/tasks/gwtasks/assign', data)
+                    host, port = gw.get_server_url()
+                    resp = self.query_task('http://{}/iotgw/api/v1/tasks/gwtasks/assign'.format(host), data)
                     LOG.info("get response")
                     if resp:
                         # 应答成功，保存任务状态，下发时间，下载任务

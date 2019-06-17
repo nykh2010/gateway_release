@@ -237,9 +237,10 @@ class Gateway(Config):
         return epd_task.task_status
 
     def get_server_url(self):
-        host = self.get('server', 'host')
-        port = self.get('server', 'port')
-        return host, port
+        with os.popen("cat /etc/gateway/dma.ini | cut -f2 -d\"=\"", 'r') as fp:
+            url = fp.read().strip()
+        url = url.split(':')
+        return url[0], url[1]       # host, port
 
     def get_task_time(self):
         epd_task = EpdTask(self.task_url)
