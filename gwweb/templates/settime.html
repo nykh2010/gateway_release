@@ -15,7 +15,26 @@
             }
             return i;
         }
-        
+        function refresh_sys_time() {
+            var time = new Date();
+            // 2019-01-21 10:47:56
+            year = time.getFullYear();
+            month = time.getMonth()+1;
+            days = time.getDate();
+            hours = time.getHours();
+            minutes = time.getMinutes();
+            seconds = time.getSeconds();
+            month = checkTime(month);
+            days = checkTime(days);
+            hours = checkTime(hours);
+            minutes = checkTime(minutes);
+            seconds = checkTime(seconds);
+            var strtime = year+"-"+month+"-"+days+"&nbsp"+hours+":"+minutes+":"+seconds;
+            $("#current_time").html(strtime);
+            setInterval("refresh_sys_time()",1000);
+            delete time;
+        }
+        refresh_sys_time();
         $(document).ready(function(){
             $("#system_year").val(year);
             $("#system_month").val(month);
@@ -24,6 +43,7 @@
             $("#system_minute").val(minutes);
             $("#system_second").val(seconds);
         })
+
     </script>
     <div class="nav">
         <a href="javascript:void(0)">网关设置&nbsp;&gt;</a>
