@@ -101,8 +101,8 @@ class OnlineRequest(Handle):
                 if ts in ('0','4','5'): # 没有任务或任务已结束
                     data = {
                         'nid': device_id,
-                        # 'image_data_id': int(data_id),
-                        'image_data_id': int(gw.get_data_id()),
+                        'image_data_id': int(data_id),
+                        # 'image_data_id': int(gw.get_data_id()),
                         'sn': gw.get_gw_id()
                     }
                     LOG.info("start query")
