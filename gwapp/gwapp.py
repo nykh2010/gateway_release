@@ -9,9 +9,8 @@ from epd_log import epdlog as LOG
 version = '1.0.0'
 
 if __name__ == "__main__":
-    if '--version' in sys.argv:
-        print(version)
-        sys.exit(0)
+    with open('/etc/gateway/gwapp.version', 'w') as vfp:
+        vfp.write(version)    
     from uplink import Uplink
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
     LOG.info('epd service start...')
