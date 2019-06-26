@@ -253,6 +253,10 @@ class Gateway(Config):
 
     def get_interval_time(self):
         return self.interval
+
+    def set_interval_time(self, interval_time):
+        self.set_item('interval', interval_time)
+        self.save()
     
     def get_auth_key(self):
         # 从文件中获取auth_key
