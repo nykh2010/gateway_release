@@ -374,6 +374,10 @@ class GatewayApp(RequestHandler):
                 gw.set_auth_key(body['check_code'])
                 resp_status = "ok"
                 resp_data = {"result":"ok"}
+            elif cmd == 'interval':
+                gw.set_interval_time(body['interval'])
+                resp_status = "ok"
+                resp_data = {"result":"ok"}
             else:
                 raise Exception("%s cmd not found" % cmd)
                 
@@ -385,10 +389,10 @@ class GatewayApp(RequestHandler):
             upload = uplink.Upload()
             url = r'http://127.0.0.1:7788/mqtt/publish/offlinecache'
             resp = {
-                "id": request['id'],
-                "from": request['from'],
+                "id": request.get('id'),
+                "from": request.get('from'),
                 "status": resp_status,
-                "command": request['command'],
+                "command": request.get('command'),
                 "d": resp_data
             }
             data = {

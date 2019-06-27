@@ -82,7 +82,7 @@ if __name__ == '__main__':
     from tornado.options import define,options
     # import uuid
     import os
-    define('log_to_stderr', type=bool, default=False)
-    define('log_file_prefix', type=str, default='/var/logs/web.log')
-    define('log_file_max_size', type=int, default=5 * 1000 * 1000)
+#    define('log_to_stderr', type=bool, default=False)
+#    define('log_file_prefix', type=str, default='/var/logs/web.log')
+#    define('log_file_max_size', type=int, default=5 * 1000 * 1000)
     main()

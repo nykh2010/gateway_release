@@ -10,10 +10,11 @@ version = '1.0.0'
 
 if __name__ == "__main__":
     with open('/etc/gateway/gwapp.version', 'w') as vfp:
-        vfp.write(version)    
-    from uplink import Uplink
+        vfp.write(version)   
+
     sys.path.append(os.path.dirname(os.path.abspath(__file__)))
     LOG.info('epd service start...')
+    from uplink import Uplink
     uplinkHandler = Uplink()
     uplinkHandler.begin()
     uplinkHandler.end()
