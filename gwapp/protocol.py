@@ -196,7 +196,7 @@ class TaskRequest(Handle):
                 #     fail_list = content.split('\n')
                 os.unlink('/tmp/success')       # 删除文件
                 # os.unlink('/tmp/fail')
-                upload_data['success_list'] = success_list
+                upload_data['success_list'] = list(set(success_list))
                 upload_data['failed_list'] = gw.get_failed_list(success_list)
             elif status == 3:
                 # 保存待执行列表到文件
