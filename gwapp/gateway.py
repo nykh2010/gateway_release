@@ -165,6 +165,7 @@ class Gateway(Config):
 
     def interval_timing(self):
         try:
+            next_time = 3600
             host = self.get('server', 'host')
             resp = urllib.request.urlopen("http://{}/iotgw/api/v1/now".format(host))
             content = resp.read()
@@ -172,9 +173,10 @@ class Gateway(Config):
             tm = localtime(serverTime['data']['unixNano']/1000000000)
             os.system("date -s \"{:04}-{:02}-{:02} {:02}:{:02}:{:02}\"".format(*tm))
         except Exception as e:
+            next_time = 300          # 获取失败后5分钟之后再尝试
             LOG.error(e.__str__())
         finally:
-            timer = threading.Timer(3600, self.interval_timing)
+            timer = threading.Timer(next_time, self.interval_timing)
             timer.start()
 
 
