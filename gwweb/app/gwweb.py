@@ -69,11 +69,13 @@ def main():
     tornado.ioloop.IOLoop.instance().start()
     return 0
     # pwindows.join()
+    
+version = '1.0.0'
 
 if __name__ == '__main__':
-    if '--version' in sys.argv:
-        print("1.0.0")
-        sys.exit(0)
+    with open('/etc/gateway/gwweb.version', 'w') as vfp:
+        vfp.write(version)
+
     import tornado.httpserver
     from tornado import web, log
     # from tornado.web import RequestHandler
